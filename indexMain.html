@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elixir 24/7 - Rural Health Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/navigation.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/chatbot.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/translate.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <span>Elixir 24/7</span>
+            </div>
+            <ul class="nav-links">
+                <li><a onclick="showPage('home')">Home</a></li>
+                <li><a onclick="showPage('telemedicine')">Telemedicine</a></li>
+                <li><a onclick="showPage('ai-assistant')">AI Assistant</a></li>
+                <li><a onclick="showPage('medicine')">Medicine Tracker</a></li>
+                <li><a onclick="showPage('records')">Health Records</a></li>
+            </ul>
+            <div id="google_translate_element"></div>
+            <button class="emergency-btn" onclick="emergency()">
+                <i class="fas fa-phone"></i> Emergency
+            </button>
+        </nav>
+    </header>
+
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <div class="hero">
+            <div class="container">
+                <h1>Healthcare for Rural India</h1>
+                <p>Connecting 173 villages around Nabha with quality medical care</p>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary" onclick="showPage('telemedicine')">
+                        <i class="fas fa-video"></i> Book Consultation
+                    </button>
+                    <button class="btn btn-secondary" onclick="toggleChatbot()">
+                        <i class="fas fa-robot"></i> AI Health Assistant
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="services">
+            <div class="container">
+                <h2>Our Services</h2>
+                <div class="service-grid">
+                    <div class="service-card" onclick="showPage('telemedicine')">
+                        <div class="service-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <h3>Telemedicine</h3>
+                        <p>Connect with qualified doctors through video consultations from the comfort of your home.</p>
+                    </div>
+                    <div class="service-card" onclick="toggleChatbot()">
+                        <div class="service-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>AI Health Assistant</h3>
+                        <p>Get instant health advice and symptom analysis through our advanced AI chatbot.</p>
+                    </div>
+                    <div class="service-card" onclick="showPage('medicine')">
+                        <div class="service-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <h3>Medicine Tracker</h3>
+                        <p>Check medicine availability in nearby pharmacies and set medication reminders.</p>
+                    </div>
+                    <div class="service-card" onclick="showPage('records')">
+                        <div class="service-icon">
+                            <i class="fas fa-file-medical"></i>
+                        </div>
+                        <h3>Health Records</h3>
+                        <p>Maintain digital health records, track appointments, and monitor your health journey.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Component -->
+    <div class="chatbot-container">
+        <div id="chatbot-window" class="chatbot-window">
+            <div class="chatbot-header">
+                <h3><i class="fas fa-robot"></i> AI Medical Assistant</h3>
+                <button class="chatbot-close" onclick="toggleChatbot()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-bubble">
+                        Hello! I'm your AI Medical Assistant. I can help you with:
+                        <br>• Symptom analysis
+                        <br>• Prescription reading
+                        <br>• Health advice
+                        <br>• Emergency guidance
+                        <br><br>How can I assist you today?
+                    </div>
+                </div>
+                
+                <div class="typing-indicator" id="typing-indicator">
+                    <div class="message-avatar">AI</div>
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="chat-input-options">
+                    <button class="input-option-btn active" onclick="setInputMode('text')" data-mode="text">
+                        <i class="fas fa-keyboard"></i> Text
+                    </button>
+                    <button class="input-option-btn" onclick="setInputMode('image')" data-mode="image">
+                        <i class="fas fa-camera"></i> Image
+                    </button>
+                    <button class="input-option-btn" onclick="setInputMode('voice')" data-mode="voice">
+                        <i class="fas fa-microphone"></i> Voice
+                    </button>
+                </div>
+                
+                <div class="chat-input-row">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Describe your symptoms or upload a prescription..." onkeypress="handleKeyPress(event)">
+                    <button class="chat-send-btn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                
+                <div class="image-upload-area" id="image-upload-area" onclick="document.getElementById('image-input').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--text-light); margin-bottom: 0.5rem;"></i>
+                    <!-- <p>Click to upload prescription or medical image</p> -->
+                    <input type="file" id="image-input" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+                    <img id="image-preview" class="image-preview" style="display: none;">
+                </div>
+                
+                <div class="voice-recording" id="voice-recording">
+                    <div class="recording-animation"></div>
+                    <span>Recording... Click to stop</span>
+                </div>
+            </div>
+        </div>
+        
+        <button class="chatbot-toggle" onclick="toggleChatbot()">
+            <i class="fas fa-comments"></i>
+        </button>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/translate.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/chatbot.js"></script>
+    <script src="js/speechRecognition.js"></script>
+    <script src="js/imageHandler.js"></script>
+    <script src="js/aiResponses.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
