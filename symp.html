@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elixir 24/7 - AI Symptom Checker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f5fa 0%, #e6eef8 100%);
+            background-attachment: fixed;
+            color: #334155;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            line-height: 1.3;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .card {
+            border-radius: 1.5rem;
+            border-width: 2px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-width 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            border-width: 4px;
+        }
+        .card.border-amber-200:hover { border-color: #d97706; }
+        
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -8px;
+            left: 50%;
+            background-color: #2563eb;
+            transition: all 0.3s ease-in-out;
+        }
+        .nav-link:hover {
+            color: #1e3a8a;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        
+        /* Chat specific styles */
+        .chat-container {
+            height: 65vh;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+        .user-message {
+            background-color: #dbeafe;
+            border-radius: 1.5rem 1.5rem 0 1.5rem;
+            max-width: 75%;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: white;
+            border-radius: 1.5rem 1.5rem 1.5rem 0;
+            max-width: 75%;
+        }
+        .input-option {
+            transition: all 0.3s ease;
+        }
+        .input-option:hover {
+            transform: scale(1.05);
+        }
+        .input-option.active {
+            border-width: 3px;
+            border-color: #2563eb;
+        }
+        
+        /* Browser autofill style override */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #60a5fa inset !important;
+            -webkit-text-fill-color: white !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+        
+        /* Pulse animation for recording */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fixed header that does not scroll -->
+    <header class="fixed top-0 left-0 right-0 z-40 py-5 bg-white/30 backdrop-blur-lg shadow-sm">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <a href="index.html" class="flex items-center space-x-4">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </a>
+            
+            <nav id="main-nav" class="hidden md:flex items-center gap-8 text-gray-600 font-medium text-lg">
+                <a href="index.html" class="nav-link">Dashboard</a>
+                <a href="index.html#services" class="nav-link">Services</a>
+                <a href="index.html#feedback" class="nav-link">Feedback</a>
+                <a href="#" class="nav-link">About Us</a>
+                <a href="#" class="nav-link">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto space-y-12 px-6 pt-32">
+        <section id="symptom-checker-header" class="text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight tracking-tight">
+                AI Symptom Checker
+            </h1>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
+                Describe your symptoms through text, voice, or image, and our AI will provide preliminary insights. Remember, this is not a substitute for professional medical advice.
+            </p>
+        </section>
+
+        <section id="symptom-checker-interface" class="bg-white/60 p-8 md:p-12 rounded-3xl shadow-lg backdrop-blur-sm">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Input Options -->
+                <div class="lg:col-span-1">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">How would you like to describe your symptoms?</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="input-option card p-6 text-center bg-blue-50 border-blue-200">
+                            <div class="w-16 h-16 rounded-3xl bg-white text-blue-600 flex items-center justify-center text-2xl mb-4 shadow-sm mx-auto">
+                                <i class="fas fa-keyboard"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-700 mb-3">Text Input</h3>
+                            <p class="text-base text-gray-600 mb-4">Type your symptoms in detail for analysis</p>
+                            <button id="text-input-btn" class="px-6 py-2 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors">
+                                Use Text
+                            </button>
+                        </div>
+                        
+                        <div class="input-option card p-6 text-center bg-green-50 border-green-200">
+                            <div class="w-16 h-16 rounded-3xl bg-white text-green-600 flex items-center justify-center text-2xl mb-4 shadow-sm mx-auto">
+                                <i class="fas fa-microphone"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-700 mb-3">Voice Input</h3>
+                            <p class="text-base text-gray-600 mb-4">Describe your symptoms verbally</p>
+                            <button id="voice-input-btn" class="px-6 py-2 bg-green-600 text-white rounded-full font-medium hover:bg-green-700 transition-colors">
+                                Use Voice
+                            </button>
+                        </div>
+                        
+                        <div class="input-option card p-6 text-center bg-purple-50 border-purple-200">
+                            <div class="w-16 h-16 rounded-3xl bg-white text-purple-600 flex items-center justify-center text-2xl mb-4 shadow-sm mx-auto">
+                                <i class="fas fa-image"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-700 mb-3">Image Input</h3>
+                            <p class="text-base text-gray-600 mb-4">Upload an image of affected area</p>
+                            <button id="image-input-btn" class="px-6 py-2 bg-purple-600 text-white rounded-full font-medium hover:bg-purple-700 transition-colors">
+                                Upload Image
+                            </button>
+                            <input type="file" id="image-upload" accept="image/*" class="hidden">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chat Interface -->
+                <div class="lg:col-span-2">
+                    <div class="card p-1 bg-amber-50 border-amber-200 h-full">
+                        <div class="bg-white rounded-2xl p-6 h-full flex flex-col">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-6">Symptom Analysis Chat</h2>
+                            
+                            <div id="chat-messages" class="chat-container mb-6 space-y-4 p-4 flex-grow bg-gray-50 rounded-xl">
+                                <div class="bot-message p-4 shadow-sm">
+                                    <p class="text-gray-700">Hello! I'm your AI Health Assistant. Please describe your symptoms using one of the input methods on the left. I'll do my best to provide preliminary insights and suggestions.</p>
+                                    <p class="text-xs text-gray-500 mt-2">Remember: This is not a substitute for professional medical advice.</p>
+                                </div>
+                            </div>
+                            
+                            <div id="input-area" class="mt-auto">
+                                <div id="text-input-area" class="hidden">
+                                    <div class="flex gap-3">
+                                        <textarea id="symptom-text" rows="3" class="flex-grow p-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="Describe your symptoms in detail..."></textarea>
+                                        <button id="submit-text-btn" class="self-end p-4 rounded-xl bg-amber-500 text-white font-semibold shadow-lg hover:bg-amber-600">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div id="voice-input-area" class="hidden text-center">
+                                    <button id="start-recording" class="pulse px-8 py-4 bg-red-500 text-white rounded-full font-semibold shadow-lg hover:bg-red-600 mb-4">
+                                        <i class="fas fa-microphone mr-2"></i> Start Recording
+                                    </button>
+                                    <button id="stop-recording" class="hidden px-8 py-4 bg-gray-500 text-white rounded-full font-semibold shadow-lg hover:bg-gray-600 mb-4">
+                                        <i class="fas fa-stop mr-2"></i> Stop Recording
+                                    </button>
+                                    <div id="recording-status" class="text-sm text-gray-600"></div>
+                                </div>
+                                
+                                <div id="image-input-area" class="hidden text-center">
+                                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 mb-4">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
+                                        <p class="text-gray-500">Drag & drop your image here or</p>
+                                        <label for="image-upload-chat" class="cursor-pointer mt-2 px-4 py-2 bg-purple-500 text-white rounded-full inline-block hover:bg-purple-600">
+                                            Browse Files
+                                        </label>
+                                        <input type="file" id="image-upload-chat" accept="image/*" class="hidden">
+                                    </div>
+                                    <div id="image-preview" class="hidden mb-4">
+                                        <img id="preview-img" class="max-h-40 mx-auto rounded-lg shadow-md">
+                                        <button id="analyze-image-btn" class="mt-3 px-6 py-2 bg-purple-500 text-white rounded-full font-medium hover:bg-purple-600">
+                                            Analyze Image
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="disclaimer" class="bg-red-50 p-8 rounded-2xl border border-red-200">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-2xl text-red-600 mr-4 mt-1"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-red-800 mb-2">Important Disclaimer</h3>
+                    <p class="text-red-700">
+                        The AI Symptom Checker is for informational purposes only and is not a substitute for professional medical advice, diagnosis, or treatment. 
+                        Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition. 
+                        Never disregard professional medical advice or delay in seeking it because of something you have read or interpreted from this AI tool.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        // DOM Elements
+        const textInputBtn = document.getElementById('text-input-btn');
+        const voiceInputBtn = document.getElementById('voice-input-btn');
+        const imageInputBtn = document.getElementById('image-input-btn');
+        const textInputArea = document.getElementById('text-input-area');
+        const voiceInputArea = document.getElementById('voice-input-area');
+        const imageInputArea = document.getElementById('image-input-area');
+        const symptomText = document.getElementById('symptom-text');
+        const submitTextBtn = document.getElementById('submit-text-btn');
+        const startRecordingBtn = document.getElementById('start-recording');
+        const stopRecordingBtn = document.getElementById('stop-recording');
+        const recordingStatus = document.getElementById('recording-status');
+        const imageUploadChat = document.getElementById('image-upload-chat');
+        const imagePreview = document.getElementById('image-preview');
+        const previewImg = document.getElementById('preview-img');
+        const analyzeImageBtn = document.getElementById('analyze-image-btn');
+        const chatMessages = document.getElementById('chat-messages');
+        
+        // Input option buttons
+        const inputOptions = document.querySelectorAll('.input-option');
+        
+        // Set active input option
+        function setActiveOption(option) {
+            inputOptions.forEach(opt => {
+                opt.classList.remove('active');
+                opt.classList.remove('border-blue-400', 'border-green-400', 'border-purple-400');
+            });
+            
+            option.classList.add('active');
+            
+            // Add specific border color based on option type
+            if (option.querySelector('.fa-keyboard')) {
+                option.classList.add('border-blue-400');
+            } else if (option.querySelector('.fa-microphone')) {
+                option.classList.add('border-green-400');
+            } else if (option.querySelector('.fa-image')) {
+                option.classList.add('border-purple-400');
+            }
+        }
+        
+        // Text input handler
+        textInputBtn.addEventListener('click', () => {
+            setActiveOption(textInputBtn.closest('.input-option'));
+            textInputArea.classList.remove('hidden');
+            voiceInputArea.classList.add('hidden');
+            imageInputArea.classList.add('hidden');
+        });
+        
+        // Voice input handler
+        voiceInputBtn.addEventListener('click', () => {
+            setActiveOption(voiceInputBtn.closest('.input-option'));
+            textInputArea.classList.add('hidden');
+            voiceInputArea.classList.remove('hidden');
+            imageInputArea.classList.add('hidden');
+        });
+        
+        // Image input handler
+        imageInputBtn.addEventListener('click', () => {
+            setActiveOption(imageInputBtn.closest('.input-option'));
+            document.getElementById('image-upload').click();
+        });
+        
+        document.getElementById('image-upload').addEventListener('change', handleImageUpload);
+        imageUploadChat.addEventListener('change', handleImageUpload);
+        
+        function handleImageUpload(e) {
+            setActiveOption(imageInputBtn.closest('.input-option'));
+            textInputArea.classList.add('hidden');
+            voiceInputArea.classList.add('hidden');
+            imageInputArea.classList.remove('hidden');
+            
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    previewImg.src = event.target.result;
+                    imagePreview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Submit text symptoms
+        submitTextBtn.addEventListener('click', () => {
+            const symptoms = symptomText.value.trim();
+            if (symptoms) {
+                addMessage(symptoms, 'user');
+                symptomText.value = '';
+                
+                // Show loading indicator
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'bot-message p-4 shadow-sm';
+                loadingDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="loader mr-3"></div>
+                        <span class="text-gray-600">Analyzing your symptoms...</span>
+                    </div>
+                `;
+                chatMessages.appendChild(loadingDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Simulate API call (replace with actual API call)
+                setTimeout(() => {
+                    chatMessages.removeChild(loadingDiv);
+                    generateResponse(symptoms, 'text');
+                }, 2000);
+            }
+        });
+        
+        // Voice recording functionality
+        let recognition;
+        let isRecording = false;
+        
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+            
+            recognition.onstart = function() {
+                isRecording = true;
+                startRecordingBtn.classList.add('hidden');
+                stopRecordingBtn.classList.remove('hidden');
+                recordingStatus.textContent = 'Listening...';
+            };
+            
+            recognition.onresult = function(event) {
+                const transcript = Array.from(event.results)
+                    .map(result => result[0])
+                    .map(result => result.transcript)
+                    .join('');
+                
+                recordingStatus.textContent = transcript;
+            };
+            
+            recognition.onend = function() {
+                isRecording = false;
+                startRecordingBtn.classList.remove('hidden');
+                stopRecordingBtn.classList.add('hidden');
+                
+                const finalTranscript = recordingStatus.textContent;
+                if (finalTranscript) {
+                    addMessage(finalTranscript, 'user');
+                    
+                    // Show loading indicator
+                    const loadingDiv = document.createElement('div');
+                    loadingDiv.className = 'bot-message p-4 shadow-sm';
+                    loadingDiv.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="loader mr-3"></div>
+                            <span class="text-gray-600">Analyzing your symptoms...</span>
+                        </div>
+                    `;
+                    chatMessages.appendChild(loadingDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // Simulate API call (replace with actual API call)
+                    setTimeout(() => {
+                        chatMessages.removeChild(loadingDiv);
+                        generateResponse(finalTranscript, 'voice');
+                    }, 2000);
+                }
+                
+                recordingStatus.textContent = '';
+            };
+            
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error', event.error);
+                recordingStatus.textContent = 'Error: ' + event.error;
+                isRecording = false;
+                startRecordingBtn.classList.remove('hidden');
+                stopRecordingBtn.classList.add('hidden');
+            };
+        } else {
+            recordingStatus.textContent = 'Speech recognition not supported in this browser';
+            startRecordingBtn.disabled = true;
+        }
+        
+        startRecordingBtn.addEventListener('click', () => {
+            if (!isRecording) {
+                recognition.start();
+            }
+        });
+        
+        stopRecordingBtn.addEventListener('click', () => {
+            if (isRecording) {
+                recognition.stop();
+            }
+        });
+        
+        // Analyze image
+        analyzeImageBtn.addEventListener('click', () => {
+            const imageDescription = "Skin condition image"; // In a real app, you would analyze the image
+            
+            addMessage("Image of affected area", 'user');
+            imagePreview.classList.add('hidden');
+            
+            // Show loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'bot-message p-4 shadow-sm';
+            loadingDiv.innerHTML = `
+                <div class="flex items-center">
+                    <div class="loader mr-3"></div>
+                    <span class="text-gray-600">Analyzing your image...</span>
+                </div>
+            `;
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Simulate API call (replace with actual API call)
+            setTimeout(() => {
+                chatMessages.removeChild(loadingDiv);
+                generateResponse(imageDescription, 'image');
+            }, 3000);
+        });
+        
+        // Add message to chat
+        function addMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = sender === 'user' ? 'user-message p-4 shadow-sm' : 'bot-message p-4 shadow-sm';
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `<p class="text-gray-700">${message}</p>`;
+            } else {
+                messageDiv.innerHTML = message;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Generate AI response (simulated)
+        function generateResponse(input, inputType) {
+            // This is a simulated response - in a real application, you would call an AI API
+            
+            let response = '';
+            
+            if (inputType === 'image') {
+                response = `
+                    <p class="text-gray-700 mb-3">Based on the image you provided, I'm detecting signs that might indicate a skin condition. Please note that image analysis is limited and should be verified by a healthcare professional.</p>
+                    <p class="font-semibold mb-2">Suggested steps:</p>
+                    <ul class="list-disc pl-5 mb-3 text-gray-700">
+                        <li>Keep the area clean and dry</li>
+                        <li>Avoid scratching or irritating the area</li>
+                        <li>Monitor for changes in size, color, or texture</li>
+                        <li>Consider consulting a dermatologist for proper diagnosis</li>
+                    </ul>
+                    <p class="text-xs text-gray-500"><strong>Disclaimer:</strong> This analysis is based on image recognition patterns and is not a medical diagnosis. Always consult a healthcare professional for proper medical advice.</p>
+                `;
+            } else {
+                // Check for certain keywords to provide more specific responses
+                const lowerInput = input.toLowerCase();
+                
+                if (lowerInput.includes('headache')) {
+                    response = `
+                        <p class="text-gray-700 mb-3">I understand you're experiencing headaches. Headaches can have various causes including tension, dehydration, or other factors.</p>
+                        <p class="font-semibold mb-2">Suggestions that might help:</p>
+                        <ul class="list-disc pl-5 mb-3 text-gray-700">
+                            <li>Rest in a quiet, dark room</li>
+                            <li>Apply a cold or warm compress to your forehead or neck</li>
+                            <li>Stay hydrated by drinking water</li>
+                            <li>Consider over-the-counter pain relief if appropriate for you</li>
+                        </ul>
+                        <p class="text-xs text-gray-500"><strong>Disclaimer:</strong> This is not medical advice. If your headache is severe, persistent, or accompanied by other symptoms like fever or vision changes, please seek medical attention immediately.</p>
+                    `;
+                } else if (lowerInput.includes('fever') || lowerInput.includes('temperature')) {
+                    response = `
+                        <p class="text-gray-700 mb-3">I understand you're experiencing fever. Fever is often a sign that your body is fighting an infection.</p>
+                        <p class="font-semibold mb-2">Suggestions that might help:</p>
+                        <ul class="list-disc pl-5 mb-3 text-gray-700">
+                            <li>Stay hydrated with water, broth, or electrolyte solutions</li>
+                            <li>Rest as much as possible</li>
+                            <li>Use over-the-counter fever reducers if appropriate for you</li>
+                            <li>Use a cool compress on your forehead</li>
+                        </ul>
+                        <p class="text-xs text-gray-500"><strong>Disclaimer:</strong> This is not medical advice. If your fever is high (above 103°F/39.4°C), persists for more than 3 days, or is accompanied by severe symptoms, please seek medical attention.</p>
+                    `;
+                } else if (lowerInput.includes('cough') || lowerInput.includes('cold')) {
+                    response = `
+                        <p class="text-gray-700 mb-3">I understand you're experiencing cough or cold symptoms. These are common respiratory issues that can be caused by viruses or allergies.</p>
+                        <p class="font-semibold mb-2">Suggestions that might help:</p>
+                        <ul class="list-disc pl-5 mb-3 text-gray-700">
+                            <li>Get plenty of rest</li>
+                            <li>Stay hydrated with warm liquids like tea or broth</li>
+                            <li>Use a humidifier to add moisture to the air</li>
+                            <li>Consider over-the-counter cough suppressants or expectorants if appropriate</li>
+                        </ul>
+                        <p class="text-xs text-gray-500"><strong>Disclaimer:</strong> This is not medical advice. If your symptoms are severe, persist for more than 10 days, or are accompanied by difficulty breathing, please seek medical attention.</p>
+                    `;
+                } else {
+                    response = `
+                        <p class="text-gray-700 mb-3">Thank you for describing your symptoms. Based on what you've shared, here are some general suggestions that might help:</p>
+                        <ul class="list-disc pl-5 mb-3 text-gray-700">
+                            <li>Rest and allow your body time to recover</li>
+                            <li>Stay hydrated by drinking plenty of fluids</li>
+                            <li>Monitor your symptoms for any changes</li>
+                            <li>Consider keeping a symptom diary to track patterns</li>
+                        </ul>
+                        <p class="text-xs text-gray-500"><strong>Disclaimer:</strong> This is for informational purposes only and is not a substitute for professional medical advice. Please consult a healthcare provider for proper diagnosis and treatment.</p>
+                    `;
+                }
+            }
+            
+            addMessage(response, 'bot');
+        }
+        
+        // Allow Enter key to submit text (but Shift+Enter for new line)
+        symptomText.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                submitTextBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
