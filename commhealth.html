@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elixir 24/7 - Community Health Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f5fa 0%, #e6eef8 100%);
+            background-attachment: fixed;
+            color: #334155;
+            line-height: 1.6;
+        }
+        body.overflow-hidden {
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -8px;
+            left: 50%;
+            background-color: #2563eb;
+            transition: all 0.3s ease-in-out;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        
+        /* Floating Buttons and Modals */
+        #ai-assistant-container, #help-container {
+            position: fixed;
+            bottom: 2.5rem;
+            z-index: 50;
+        }
+        #ai-assistant-container { right: 2.5rem; }
+        #help-container { left: 2.5rem; }
+
+        #ai-assistant-toggle, #help-toggle {
+            width: 64px;
+            height: 64px;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        #ai-assistant-toggle { background-color: #2563eb; }
+        #help-toggle { background-color: #6366f1; animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1); }
+        #ai-assistant-toggle:hover { transform: scale(1.1) rotate(10deg); background-color: #1d4ed8; }
+        #help-toggle:hover { animation: none; transform: scale(1.1); background-color: #4f46e5; }
+        @keyframes pulse {
+            70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }
+        }
+        #help-modal-overlay, #ai-assistant-chat { transition: opacity 0.3s ease; }
+        #help-modal { transition: transform 0.3s ease, opacity 0.3s ease; }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="notification" class="hidden fixed top-5 left-1/2 -translate-x-1/2 bg-green-500 text-white py-3 px-6 rounded-full shadow-lg opacity-0 transition-opacity duration-500 z-50"></div>
+
+    <div id="help-modal-overlay" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 opacity-0">
+        <div id="help-modal" class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-2xl opacity-0 transform scale-95 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-question-circle text-3xl text-indigo-500"></i>
+                    <h2 class="text-2xl font-bold text-gray-800">Dashboard Guide</h2>
+                </div>
+                <button id="close-help-modal-btn" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+            </div>
+            <div class="space-y-6 text-gray-600">
+                <div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-2">Community Health Dashboard</h3>
+                    <p>This page gives you a real-time overview of health trends in your selected community.</p>
+                     <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li><strong>Key Stats:</strong> See important numbers like total cases and vaccination rates at a glance.</li>
+                        <li><strong>Charts:</strong> Visualize disease trends and affected age groups to understand community health better.</li>
+                        <li><strong>Medicine Demand & Alerts:</strong> Stay informed about which medicines are needed most and any urgent health warnings.</li>
+                    </ul>
+                </div>
+                <hr>
+                <div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-2">AI Health Assistant</h3>
+                    <p>Click the <i class="fas fa-comment-dots text-blue-500"></i> icon in the bottom-right corner to open the AI chat. You can ask general health questions, but remember it's not a substitute for professional medical advice.</p>
+                </div>
+                 <hr>
+                <div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-2">Navigating Back</h3>
+                    <p>Use the links in the header to return to the main Dashboard (Home), explore other services, or visit other pages.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="fixed top-0 left-0 right-0 z-40 py-5 bg-white/30 backdrop-blur-lg shadow-sm">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <a href="index.html" class="flex items-center space-x-4">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </a>
+            <nav id="main-nav" class="hidden md:flex items-center gap-8 text-gray-600 font-medium text-lg">
+                <a href="dashboard.html" class="nav-link">Home</a>
+                <a href="dashboard.html#services" class="nav-link text-blue-600 font-semibold">Services</a>
+                <a href="dashboard.html#feedback" class="nav-link">Feedback</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="#" class="nav-link">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto space-y-16 px-6 pt-32 pb-24">
+
+        <section id="hero" class="text-center">
+             <div class="flex justify-center items-center gap-4 mb-4">
+                <i class="fas fa-chart-line text-4xl text-cyan-600"></i>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight tracking-tight">
+                    Community Health Dashboard
+                </h1>
+            </div>
+            <p class="text-gray-600 mt-2 max-w-3xl mx-auto text-lg leading-relaxed">
+                Real-time insights into the health trends and needs of your community.
+            </p>
+             <div class="mt-4 text-sm text-gray-500 inline-flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-full">
+                <i class="fas fa-map-marker-alt text-cyan-600"></i>
+                <span>Showing data for: <strong id="location-display">Nabha, Punjab</strong></span>
+            </div>
+        </section>
+        
+        <section id="dashboard-content">
+            <div class="bg-white/60 p-8 md:p-12 rounded-3xl shadow-lg backdrop-blur-sm space-y-12">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                    <div class="bg-white p-6 rounded-2xl shadow">
+                        <p class="text-sm font-medium text-gray-500">Total Cases (This Month)</p>
+                        <p class="text-3xl font-bold text-cyan-600 mt-1">1,204</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-2xl shadow">
+                        <p class="text-sm font-medium text-gray-500">Most Common Symptom</p>
+                        <p class="text-3xl font-bold text-cyan-600 mt-1">Fever</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-2xl shadow">
+                        <p class="text-sm font-medium text-gray-500">Vaccination Rate</p>
+                        <p class="text-3xl font-bold text-cyan-600 mt-1">82%</p>
+                    </div>
+                     <div class="bg-white p-6 rounded-2xl shadow">
+                        <p class="text-sm font-medium text-gray-500">Active Health Alerts</p>
+                        <p class="text-3xl font-bold text-red-500 mt-1">1</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                    <div class="lg:col-span-3 bg-white p-6 rounded-2xl shadow">
+                        <h3 class="text-lg font-bold mb-4 text-gray-700">Reported Disease Trends (This Month)</h3>
+                        <div class="h-80"><canvas id="disease-trends-chart"></canvas></div>
+                    </div>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow">
+                        <h3 class="text-lg font-bold mb-4 text-gray-700">Affected Age Groups</h3>
+                         <div class="h-80"><canvas id="age-demographics-chart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-2xl shadow">
+                         <h3 class="text-lg font-bold mb-4 text-gray-700">Top In-Demand Medicines</h3>
+                         <ul class="space-y-3">
+                            <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"><span>1. Paracetamol 650mg</span><span class="font-bold text-cyan-700">High Demand</span></li>
+                            <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"><span>2. Azithromycin 500mg</span><span class="font-bold text-cyan-700">High Demand</span></li>
+                            <li class="flex justify-between items-center p-3 bg-gray-50 rounded-lg"><span>3. Vitamin C & Zinc Tablets</span><span class="font-semibold text-amber-600">Moderate Demand</span></li>
+                         </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow">
+                        <h3 class="text-lg font-bold mb-4 text-gray-700">Community Health Alerts</h3>
+                        <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg" role="alert">
+                            <p class="font-bold mb-1">Dengue Outbreak Warning</p>
+                            <p class="text-sm">Increased cases of Dengue reported. Please take necessary precautions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="text-center py-12 border-t border-gray-300">
+             <h3 class="text-3xl font-bold text-gray-800">Elixir 24/7</h3>
+             <p class="text-base text-gray-500 mt-2">Better Health, Better Future.</p>
+             <div class="flex justify-center space-x-7 text-gray-500 mt-8 text-2xl">
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-twitter"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-linkedin-in"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-instagram"></i></a>
+             </div>
+             <p class="text-sm text-gray-400 mt-8">© 2025 Elixir 24/7. All rights reserved.</p>
+        </footer>
+    </main>
+    
+    <div id="help-container">
+        <button id="help-toggle"><i class="fas fa-question"></i></button>
+    </div>
+
+    <div id="ai-assistant-container">
+        <div id="ai-assistant-chat" class="hidden bg-white rounded-2xl shadow-xl p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">AI Health Assistant</h3>
+                <button id="close-chat-btn" class="text-gray-400 hover:text-gray-700 text-xl"><i class="fas fa-times"></i></button>
+            </div>
+            <p class="text-xs text-gray-500 mb-4">Get quick answers to general health questions. Not a substitute for professional medical advice.</p>
+            <div id="health-response" class="p-4 mb-4 bg-gray-100 rounded-lg text-sm hidden whitespace-pre-wrap max-h-60 overflow-y-auto"></div>
+             <div id="loading-spinner-chat" class="hidden flex justify-center py-3"><div class="loader"></div></div>
+            <div class="flex gap-3 items-center">
+                 <input id="health-query-input" class="flex-grow p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Ask a health question..."/>
+                <button id="get-advice-btn" class="flex justify-center items-center p-3 rounded-lg bg-blue-500 text-white font-semibold shadow-lg hover:bg-blue-600 text-lg"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <button id="ai-assistant-toggle"><i class="fas fa-comment-dots"></i></button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const diseaseData = {
+                labels: ['Flu', 'Dengue', 'Stomach Inf.'],
+                datasets: [{
+                    label: 'Cases This Month',
+                    data: [105, 99, 65],
+                    backgroundColor: ['#06b6d4', '#f43f5e', '#f59e0b'],
+                    borderColor: ['#06b6d4', '#f43f5e', '#f59e0b'],
+                    borderWidth: 1
+                }]
+            };
+
+            const ageData = {
+                labels: ['0-18y', '19-40y', '41-60y', '60+y'],
+                datasets: [{
+                    label: 'Affected Population',
+                    data: [30, 45, 15, 10],
+                    backgroundColor: ['#06b6d4', '#0891b2', '#0e7490', '#164e63'],
+                    hoverOffset: 4
+                }]
+            };
+
+            const diseaseCtx = document.getElementById('disease-trends-chart').getContext('2d');
+            new Chart(diseaseCtx, { type: 'bar', data: diseaseData, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+
+            const ageCtx = document.getElementById('age-demographics-chart').getContext('2d');
+            new Chart(ageCtx, { type: 'doughnut', data: ageData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } } } });
+            
+            // --- Modal and General UI Logic ---
+            const helpToggleBtn = document.getElementById('help-toggle');
+            const helpModalOverlay = document.getElementById('help-modal-overlay');
+            const helpModal = document.getElementById('help-modal'); 
+            const closeHelpModalBtn = document.getElementById('close-help-modal-btn');
+            
+            function openHelpModal() {
+                document.body.classList.add('overflow-hidden');
+                helpModalOverlay.classList.remove('hidden');
+                setTimeout(() => { 
+                    helpModalOverlay.classList.remove('opacity-0'); 
+                    helpModal.classList.remove('opacity-0', 'scale-95'); 
+                }, 10);
+            }
+
+            function closeHelpModal() {
+                document.body.classList.remove('overflow-hidden');
+                helpModalOverlay.classList.add('opacity-0');
+                helpModal.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => helpModalOverlay.classList.add('hidden'), 300);
+            }
+            
+            helpToggleBtn.addEventListener('click', openHelpModal);
+            closeHelpModalBtn.addEventListener('click', closeHelpModal);
+            helpModalOverlay.addEventListener('click', e => e.target === helpModalOverlay && closeHelpModal());
+            
+            // --- AI Assistant Logic ---
+            const aiAssistantToggleBtn = document.getElementById('ai-assistant-toggle');
+            const aiAssistantChat = document.getElementById('ai-assistant-chat');
+            const closeChatBtn = document.getElementById('close-chat-btn');
+            const getAdviceBtn = document.getElementById('get-advice-btn');
+            const healthQueryInput = document.getElementById('health-query-input');
+            const healthResponseDiv = document.getElementById('health-response');
+            const chatLoadingSpinner = document.getElementById('loading-spinner-chat');
+
+            aiAssistantToggleBtn.addEventListener('click', () => aiAssistantChat.classList.toggle('hidden'));
+            closeChatBtn.addEventListener('click', () => aiAssistantChat.classList.add('hidden'));
+
+            const handleQuery = async () => {
+                const userQuery = healthQueryInput.value.trim();
+                if (userQuery === '') return;
+                
+                chatLoadingSpinner.classList.remove('hidden');
+                healthResponseDiv.classList.add('hidden');
+                healthQueryInput.value = '';
+
+                const prompt = `You are an AI Health Assistant. Provide a concise, helpful, and general health-related response to the following user query. Use markdown for formatting. Do NOT give medical advice. Always include this disclaimer at the end: "**Disclaimer:** This is for informational purposes only. Consult a healthcare professional for medical advice."\n\n**User query:** ${userQuery}`;
+                
+                try {
+                    const apiKey = ""; 
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+                    const payload = { contents: [{ parts: [{ text: prompt }] }] };
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) throw new Error(`API call failed: ${response.status}`);
+                    const result = await response.json();
+                    const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
+                    healthResponseDiv.innerHTML = generatedText.replace(/\n/g, '<br>');
+                    healthResponseDiv.classList.remove('hidden');
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    healthResponseDiv.textContent = "An error occurred. The API key might be missing or invalid.";
+                    healthResponseDiv.classList.remove('hidden');
+                } finally {
+                    chatLoadingSpinner.classList.add('hidden');
+                }
+            };
+
+            getAdviceBtn.addEventListener('click', handleQuery);
+            healthQueryInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleQuery();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
