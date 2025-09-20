@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elixir 24/7 - Contact Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f5fa 0%, #e6eef8 100%);
+            background-attachment: fixed;
+            color: #334155;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            line-height: 1.3;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -8px;
+            left: 50%;
+            background-color: #2563eb;
+            transition: all 0.3s ease-in-out;
+        }
+        .nav-link:hover {
+            color: #1e3a8a;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        
+        .team-contact-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: #f1f5f9;
+            border-radius: 1rem;
+        }
+        .member-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        .member-name {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1.125rem;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #e0e7ff inset !important; /* Lighter blue for autofill */
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="notification" class="hidden fixed top-5 left-1/2 -translate-x-1/2 bg-green-500 text-white py-3 px-6 rounded-full shadow-lg opacity-0 transition-opacity duration-500 z-50"></div>
+
+    <header class="fixed top-0 left-0 right-0 z-40 py-5 bg-white/30 backdrop-blur-lg shadow-sm">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <a href="index.html" class="flex items-center space-x-4">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </a>
+            <nav id="main-nav" class="hidden md:flex items-center gap-8 text-gray-600 font-medium text-lg">
+                <a href="dashboard.html#home" class="nav-link">Home</a>
+                <a href="dashboard.html#services" class="nav-link">Services</a>
+                <a href="dashboard.html#feedback" class="nav-link">Feedback</a>
+                <a href="about.html" class="nav-link">About Us</a>
+                <a href="#" class="nav-link text-blue-600 font-semibold">Contact</a>
+                <a href="#" class="nav-link">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto space-y-24 px-6 pt-32 pb-16">
+
+        <section id="hero" class="text-center">
+             <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight tracking-tight">
+                Get In Touch
+            </h1>
+            <p class="text-gray-600 mt-4 max-w-3xl mx-auto text-lg leading-relaxed">
+                We're here to help with your inquiries, feedback, and collaboration ideas. Reach out to us, and we'll get back to you as soon as possible.
+            </p>
+        </section>
+        
+        <section id="contact-form">
+            <div class="bg-white/60 p-8 md:p-12 rounded-3xl shadow-lg backdrop-blur-sm">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    
+                    <!-- Left Column: Contact Details -->
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-800 mb-6">Contact Our Team</h2>
+                        <div class="space-y-4">
+                            <div class="team-contact-card">
+                                <div class="member-img bg-blue-500">SR</div>
+                                <div class="member-name">Samadrita Roy</div>
+                            </div>
+                            <div class="team-contact-card">
+                                <div class="member-img bg-green-500">SG</div>
+                                <div class="member-name">Sagnik Ghosh</div>
+                            </div>
+                             <div class="team-contact-card">
+                                <div class="member-img bg-purple-500">AC</div>
+                                <div class="member-name">Asmita Chakraborty</div>
+                            </div>
+                             <div class="team-contact-card">
+                                <div class="member-img bg-teal-500">RB</div>
+                                <div class="member-name">Rupam Betal</div>
+                            </div>
+                            <div class="team-contact-card">
+                                <div class="member-img bg-orange-500">AM</div>
+                                <div class="member-name">Animesh Manna</div>
+                            </div>
+                            <div class="team-contact-card">
+                                <div class="member-img bg-pink-500">AD</div>
+                                <div class="member-name">Arya Dholey</div>
+                            </div>
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-gray-300">
+                            <h3 class="text-xl font-bold text-gray-700 mb-4">General Inquiries</h3>
+                            <div class="space-y-2 text-gray-600">
+                                <p><i class="fas fa-phone mr-2 text-blue-500"></i> +91 98765 43210</p>
+                                <p><i class="fas fa-envelope mr-2 text-blue-500"></i> <a href="mailto:contact@elixir247.com" class="hover:underline text-blue-600">contact@elixir247.com</a></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Form -->
+                    <div>
+                         <h2 class="text-3xl font-bold text-gray-800 mb-6">Send Us a Message</h2>
+                         <form id="contactForm" class="space-y-6">
+                            <div>
+                                <label for="name" class="font-medium text-gray-700 mb-1">Your Name</label>
+                                <input type="text" id="name" placeholder="Enter your full name" required class="w-full p-3 bg-white/50 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            </div>
+                            <div>
+                                <label for="email" class="font-medium text-gray-700 mb-1">Your Email</label>
+                                <input type="email" id="email" placeholder="Enter your email address" required class="w-full p-3 bg-white/50 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            </div>
+                            <div>
+                                <label for="subject" class="font-medium text-gray-700 mb-1">Subject</label>
+                                <select id="subject" required class="w-full p-3 bg-white/50 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                    <option value="">Select a subject</option>
+                                    <option value="general">General Inquiry</option>
+                                    <option value="project">Project Collaboration</option>
+                                    <option value="technical">Technical Support</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="message" class="font-medium text-gray-700 mb-1">Your Message</label>
+                                <textarea id="message" placeholder="Type your message here..." required rows="5" class="w-full p-3 bg-white/50 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 resize-y"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-3 px-6 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-lg">
+                                Send Message <i class="fas fa-paper-plane ml-2"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        
+        <footer class="text-center py-12 border-t border-gray-300">
+             <h3 class="text-3xl font-bold text-gray-800">Elixir 24/7</h3>
+             <p class="text-base text-gray-500 mt-2">Better Health, Better Future.</p>
+             <div class="flex justify-center space-x-7 text-gray-500 mt-8 text-2xl">
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-twitter"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-linkedin-in"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-instagram"></i></a>
+             </div>
+             <p class="text-sm text-gray-400 mt-8">© 2025 Elixir 24/7. All rights reserved.</p>
+        </footer>
+    </main>
+    
+    <script>
+        const contactForm = document.getElementById('contactForm');
+        const notification = document.getElementById('notification');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            if (name) {
+                notification.textContent = `Thank you, ${name}! Your message has been sent.`;
+                notification.classList.remove('hidden');
+                setTimeout(() => {
+                    notification.classList.remove('opacity-0');
+                }, 100);
+
+                contactForm.reset();
+
+                setTimeout(() => {
+                    notification.classList.add('opacity-0');
+                    setTimeout(() => {
+                        notification.classList.add('hidden');
+                    }, 500);
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+</html>

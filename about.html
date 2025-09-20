@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elixir 24/7 - About Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f5fa 0%, #e6eef8 100%);
+            background-attachment: fixed;
+            color: #334155;
+            line-height: 1.6;
+        }
+        h1, h2, h3 {
+            line-height: 1.3;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -8px;
+            left: 50%;
+            background-color: #2563eb;
+            transition: all 0.3s ease-in-out;
+        }
+        .nav-link:hover {
+            color: #1e3a8a;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        
+        .team-member {
+            background-color: #fff;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+        .team-member:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -10px rgb(0 0 0 / 0.1);
+        }
+        .member-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 auto 1rem auto;
+            border: 4px solid white;
+        }
+        .member-name { font-weight: 700; color: #1e293b; font-size: 1.25rem; }
+        .member-role { font-weight: 500; font-size: 0.875rem; margin-top: 0.25rem; }
+        .member-desc { color: #475569; margin-top: 0.75rem; font-size: 0.875rem; }
+
+    </style>
+</head>
+<body>
+
+    <header class="fixed top-0 left-0 right-0 z-40 py-5 bg-white/30 backdrop-blur-lg shadow-sm">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <a href="index.html" class="flex items-center space-x-4">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </a>
+            <nav id="main-nav" class="hidden md:flex items-center gap-8 text-gray-600 font-medium text-lg">
+                <a href="dashboard.html#home" class="nav-link">Home</a>
+                <a href="dashboard.html#services" class="nav-link">Services</a>
+                <a href="dashboard.html#feedback" class="nav-link">Feedback</a>
+                <a href="#" class="nav-link text-blue-600 font-semibold">About Us</a>
+                <a href="#" class="nav-link">Contact</a>
+                <a href="#" class="nav-link">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto space-y-24 px-6 pt-32 pb-16">
+
+        <section id="hero" class="text-center">
+             <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight tracking-tight">
+                Transforming Healthcare Through Innovation
+            </h1>
+            <p class="text-gray-600 mt-4 max-w-3xl mx-auto text-lg leading-relaxed">
+                We are a dedicated team of professionals working to improve healthcare accessibility for all through technology-driven, human-centered solutions.
+            </p>
+        </section>
+        
+        <section id="mission">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white/60 p-8 rounded-2xl shadow-lg text-center backdrop-blur-sm">
+                    <div class="bg-indigo-100 p-4 rounded-full inline-block mb-4">
+                        <i class="fas fa-bullseye text-3xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Our Mission</h3>
+                    <p class="text-gray-600 text-sm">To leverage technology to improve healthcare accessibility and create innovative solutions for community wellness.</p>
+                </div>
+                
+                <div class="bg-white/60 p-8 rounded-2xl shadow-lg text-center backdrop-blur-sm">
+                    <div class="bg-indigo-100 p-4 rounded-full inline-block mb-4">
+                        <i class="fas fa-exclamation-circle text-3xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">The Problem We Solve</h3>
+                    <p class="text-gray-600 text-sm">We address the lack of timely healthcare and health awareness by creating a digital platform that connects patients, doctors, and health workers.</p>
+                </div>
+                
+                <div class="bg-white/60 p-8 rounded-2xl shadow-lg text-center backdrop-blur-sm">
+                    <div class="bg-indigo-100 p-4 rounded-full inline-block mb-4">
+                        <i class="fas fa-eye text-3xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Our Vision</h3>
+                    <p class="text-gray-600 text-sm">To build a sustainable, tech-driven healthcare ecosystem that empowers communities with better resources and awareness.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="team">
+            <div class="bg-white/60 p-8 md:p-12 rounded-3xl shadow-lg backdrop-blur-sm">
+                <div class="text-center mb-14">
+                    <h2 class="text-4xl font-bold text-gray-800">Meet Our Team</h2>
+                    <p class="text-gray-500 mt-3 max-w-2xl mx-auto text-lg">The talented individuals behind Elixir 24/7</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="team-member">
+                        <div class="member-img bg-blue-500">SR</div>
+                        <div class="member-name">Samadrita Roy</div>
+                        <div class="member-role text-blue-600">Lead Developer</div>
+                        <p class="member-desc">Samadrita oversees the technical development and ensures seamless integration of all features.</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-img bg-green-500">SG</div>
+                        <div class="member-name">Sagnik Ghosh</div>
+                        <div class="member-role text-green-600">Research Specialist</div>
+                        <p class="member-desc">Sagnik conducts thorough research to ensure our solutions address real healthcare challenges.</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-img bg-purple-500">AC</div>
+                        <div class="member-name">Asmita Chakraborty</div>
+                        <div class="member-role text-purple-600">UI/UX Designer</div>
+                        <p class="member-desc">Asmita creates intuitive and user-friendly interfaces that enhance the user experience.</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-img bg-teal-500">RB</div>
+                        <div class="member-name">Rupam Betal</div>
+                        <div class="member-role text-teal-600">Project Manager</div>
+                        <p class="member-desc">Rupam coordinates between teams and ensures timely delivery of all project milestones.</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-img bg-orange-500">AM</div>
+                        <div class="member-name">Animesh Manna</div>
+                        <div class="member-role text-orange-600">Marketing Head</div>
+                        <p class="member-desc">Animesh drives our outreach strategies to connect with communities and partners.</p>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-img bg-pink-500">AD</div>
+                        <div class="member-name">Arya Dholey</div>
+                        <div class="member-role text-pink-600">Community Manager</div>
+                        <p class="member-desc">Arya engages with our users and health workers to build a strong, supportive network.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="inspiration">
+             <div class="bg-white/60 p-8 md:p-12 rounded-3xl shadow-lg backdrop-blur-sm">
+                <div class="text-center mb-10">
+                    <h2 class="text-4xl font-bold text-gray-800">Our Inspiration</h2>
+                    <p class="text-gray-500 mt-3 max-w-2xl mx-auto text-lg">What drives us to make a difference.</p>
+                </div>
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2 space-y-4">
+                        <p class="text-gray-600">Our journey began when we witnessed the challenges faced by people in accessing quality healthcare, especially in remote areas. The lack of timely medical consultation and awareness inspired us to create a platform that bridges these gaps.</p>
+                        <p class="text-gray-600">We believe that technology can be a powerful equalizer in healthcare, providing access to quality medical resources regardless of geographical constraints.</p>
+                    </div>
+                    <div class="md:w-1/2">
+                        <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Healthcare inspiration" class="rounded-2xl shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="text-center py-12 border-t border-gray-300">
+             <h3 class="text-3xl font-bold text-gray-800">Elixir 24/7</h3>
+             <p class="text-base text-gray-500 mt-2">Better Health, Better Future.</p>
+             <div class="flex justify-center space-x-7 text-gray-500 mt-8 text-2xl">
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-twitter"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-linkedin-in"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-instagram"></i></a>
+             </div>
+             <p class="text-sm text-gray-400 mt-8">© 2025 Elixir 24/7. All rights reserved.</p>
+        </footer>
+    </main>
+
+</body>
+</html>
