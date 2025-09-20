@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up for Elixir 24/7</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body, html {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f5fa 0%, #e6eef8 100%);
+            background-attachment: fixed;
+            color: #334155;
+            line-height: 1.6;
+            height: 100%;
+            overflow: hidden; /* Prevents scrolling */
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .option-card {
+            border-radius: 9999px; /* Make it circular */
+            border-width: 4px;
+            background-color: white;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            width: 240px;
+            height: 240px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem; /* Add padding for content */
+        }
+        .option-card:hover {
+            transform: translateY(-12px) scale(1.05);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.2);
+        }
+        /* Static and Hover border colors */
+        .border-blue-200:hover { border-color: #3b82f6; }
+        .border-green-200:hover { border-color: #22c55e; }
+        .border-teal-200:hover { border-color: #14b8a6; }
+        .border-purple-200:hover { border-color: #a855f7; }
+    </style>
+</head>
+<body>
+
+    <div id="signup-page" class="container mx-auto px-6 flex flex-col h-screen">
+        <!-- Simplified Header -->
+        <header class="py-5">
+            <a href="index.html" class="flex items-center space-x-4 w-fit">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </a>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow flex flex-col items-center justify-center text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight tracking-tight">
+                Join Elixir 24/7 as a...
+            </h1>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
+                Choose your role to get started with our digital healthcare ecosystem.
+            </p>
+            
+            <!-- Role Selection Options -->
+            <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-12">
+
+                <!-- User/Patient Card -->
+                <a href="#" class="option-card border-blue-200">
+                    <div class="text-blue-500 text-6xl mb-4">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">User</h2>
+                    <p class="text-gray-500 text-sm mt-1">Access health services</p>
+                </a>
+
+                <!-- Doctor Card -->
+                <a href="#" class="option-card border-green-200">
+                    <div class="text-green-500 text-6xl mb-4">
+                        <i class="fas fa-user-doctor"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">Doctor</h2>
+                    <p class="text-gray-500 text-sm mt-1">Provide consultations</p>
+                </a>
+
+                <!-- Pharmacy Partner Card -->
+                <a href="#" class="option-card border-teal-200">
+                    <div class="text-teal-500 text-6xl mb-4">
+                        <i class="fas fa-prescription-bottle-medical"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">Pharmacist</h2>
+                    <p class="text-gray-500 text-sm mt-1">Manage your pharmacy</p>
+                </a>
+
+                <!-- Healthcare Worker Card -->
+                <a href="#" class="option-card border-purple-200">
+                    <div class="text-purple-500 text-6xl mb-4">
+                        <i class="fas fa-briefcase-medical"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">Health Worker</h2>
+                    <p class="text-gray-500 text-sm mt-1">Community support</p>
+                </a>
+
+            </div>
+        </main>
+
+        <footer class="text-center py-8">
+            <p class="text-sm text-gray-500">© 2025 Elixir 24/7. All rights reserved.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
+
