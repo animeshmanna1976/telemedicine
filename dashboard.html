@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elixir 24/7 - Patient Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f5fa 0%, #e6eef8 100%);
+            background-attachment: fixed;
+            color: #334155;
+            line-height: 1.6;
+        }
+        /* Added class to prevent body scroll when modal is open */
+        body.overflow-hidden {
+            overflow: hidden;
+        }
+        h1, h2, h3 {
+            line-height: 1.3;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .card {
+            border-radius: 1.5rem;
+            border-width: 2px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-width 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            border-width: 4px;
+        }
+        .card.border-green-200:hover { border-color: #16a34a; }
+        .card.border-cyan-200:hover { border-color: #0891b2; }
+        .card.border-indigo-200:hover { border-color: #4f46e5; }
+        .card.border-amber-200:hover { border-color: #d97706; }
+        .card.border-blue-200:hover { border-color: #2563eb; }
+        .card.border-pink-200:hover { border-color: #db2777; }
+        .card.border-purple-200:hover { border-color: #9333ea; }
+        .card.border-red-200:hover { border-color: #dc2626; }
+        .card.border-teal-200:hover { border-color: #0d9488; }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        #ai-assistant-container {
+            position: fixed;
+            bottom: 2.5rem;
+            right: 2.5rem;
+            z-index: 50;
+        }
+        #ai-assistant-chat {
+            margin-bottom: 1rem;
+            width: 90vw;
+            max-width: 400px;
+            background-color: white;
+        }
+        #ai-assistant-toggle {
+            width: 64px;
+            height: 64px;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        #ai-assistant-toggle:hover {
+            transform: scale(1.1) rotate(10deg);
+            background-color: #1d4ed8;
+        }
+        
+        #help-container {
+            position: fixed;
+            bottom: 2.5rem;
+            left: 2.5rem;
+            z-index: 50;
+        }
+        #help-toggle {
+            width: 64px;
+            height: 64px;
+            background-color: #6366f1; /* Indigo */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            animation: pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+        #help-toggle:hover {
+            animation: none;
+            transform: scale(1.1);
+            background-color: #4f46e5;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }
+        }
+
+        #help-modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        #help-modal {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="notification" class="hidden fixed top-5 left-1/2 -translate-x-1/2 bg-green-500 text-white py-3 px-6 rounded-full shadow-lg opacity-0 transition-opacity duration-500 z-50"></div>
+
+    <div id="help-modal-overlay" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 opacity-0">
+        <div id="help-modal" class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-2xl opacity-0 transform scale-95 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-question-circle text-3xl text-indigo-500"></i>
+                    <h2 class="text-2xl font-bold text-gray-800">Dashboard Guide</h2>
+                </div>
+                <button id="close-help-modal-btn" class="text-gray-400 hover:text-gray-600 text-3xl">&times;</button>
+            </div>
+            <div class="space-y-6 text-gray-600">
+                <div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-2">Explore Our Services</h3>
+                    <p>Click on any of the colorful cards to access a specific health service. Here’s a quick overview:</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li><strong>Medicine Availability:</strong> Search for medicines and check stock in nearby pharmacies.</li>
+                        <li><strong>Community Health Dashboard:</strong> View local health trends and data.</li>
+                        <li><strong>Digital Health Card (QR):</strong> Access your complete medical history in one place.</li>
+                        <li><strong>AI Symptom Checker:</strong> Get quick, AI-powered insights into your symptoms.</li>
+                        <li><strong>Doctor Appointments:</strong> Schedule and manage your appointments with healthcare professionals.</li>
+                        <li><strong>Women & Child Health:</strong> Specialized resources for mothers and children.</li>
+                        <li><strong>Mental Wellness:</strong> Access tools for stress management and mental well-being.</li>
+                        <li><strong>Outbreak Reporting:</strong> Report and track local disease outbreaks.</li>
+                        <li><strong>Community Initiatives:</strong> Join local health campaigns and events.</li>
+                    </ul>
+                </div>
+                <hr>
+                <div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-2">AI Health Assistant</h3>
+                    <p>Click the <i class="fas fa-comment-dots text-blue-500"></i> icon in the bottom-right corner to open the AI chat. You can ask general health questions, but remember it's not a substitute for professional medical advice.</p>
+                </div>
+                <hr>
+                <div>
+                    <h3 class="font-bold text-lg text-gray-800 mb-2">Giving Feedback</h3>
+                    <p>We value your opinion! Scroll down to the "Share Your Experience" section, fill in your name and message, and click "Submit Feedback". A confirmation will appear at the top of the screen.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="fixed top-0 left-0 right-0 z-40 py-5 bg-white/30 backdrop-blur-lg shadow-sm">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <a href="index.html" class="flex items-center space-x-4">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </a>
+            <nav id="main-nav" class="hidden md:flex items-center gap-8 text-gray-600 font-medium text-lg">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#services" class="nav-link">Services</a>
+                <a href="#feedback" class="nav-link">Feedback</a>
+                <a href="#" class="nav-link">About Us</a>
+                <a href="#" class="nav-link">Contact</a>
+                <a href="#" class="nav-link">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto space-y-24 px-6 pt-32" id="home">
+        <section id="welcome" class="text-center">
+             <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight tracking-tight">
+                Welcome to Your Health Dashboard
+            </h1>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
+                All your healthcare needs, simplified and accessible. Manage appointments, track your health, and explore our services below.
+            </p>
+        </section>
+
+        <section id="services">
+            <div class="bg-white/60 p-8 md:p-12 rounded-3xl shadow-lg backdrop-blur-sm">
+                <div class="text-center mb-14">
+                    <h2 class="text-4xl font-bold text-gray-800">Explore Our Services</h2>
+                    <p class="text-gray-500 mt-3 max-w-2xl mx-auto text-lg">Your complete suite of digital healthcare tools.</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                    <div class="card p-8 flex flex-col items-center text-center group bg-green-50 border-green-200">
+                        <div class="w-18 h-18 rounded-3xl bg-white text-green-600 flex items-center justify-center text-3xl mb-7 shadow-sm"><i class="fas fa-pills"></i></div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Medicine Availability</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Check real-time pharmacy stock and find alternatives nearby.</p>
+                        <a href="medicine-availability.html" class="font-semibold text-green-600 hover:text-green-800">Check Now <i class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center text-center group bg-cyan-50 border-cyan-200">
+                        <div class="w-18 h-18 rounded-3xl bg-white text-cyan-600 flex items-center justify-center text-3xl mb-7 shadow-sm"><i class="fas fa-chart-line"></i></div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Community Health Dashboard</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">View village-level disease trends and medicine demand analytics.</p>
+                        <a href="#" class="font-semibold text-cyan-600 hover:text-cyan-800">View Dashboard <i class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center text-center group bg-indigo-50 border-indigo-200">
+                        <div class="w-18 h-18 rounded-3xl bg-white text-indigo-600 flex items-center justify-center text-3xl mb-7 shadow-sm"><i class="fas fa-id-card"></i></div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Digital Health Card (QR)</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Access your medical history, prescriptions, and reports instantly.</p>
+                        <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-800">Open Card <i class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center text-center group bg-amber-50 border-amber-200">
+                        <div class="w-18 h-18 rounded-3xl bg-white text-amber-600 flex items-center justify-center text-3xl mb-7 shadow-sm"><i class="fas fa-robot"></i></div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">AI Symptom Checker</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Get preliminary insights into your symptoms with our AI tool.</p>
+                        <a href="#" class="font-semibold text-amber-600 hover:text-amber-800">Start Check <i class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center text-center group bg-blue-50 border-blue-200">
+                        <div class="w-18 h-18 rounded-3xl bg-white text-blue-600 flex items-center justify-center text-3xl mb-7 shadow-sm"><i class="fas fa-calendar-check"></i></div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Doctor Appointments</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Easily book and manage your medical appointments with professionals.</p>
+                        <a href="#" class="font-semibold text-blue-600 hover:text-blue-800">Book Now <i class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center text-center group bg-pink-50 border-pink-200">
+                        <div class="w-18 h-18 rounded-3xl bg-white text-pink-600 flex items-center justify-center text-3xl mb-7 shadow-sm"><i class="fas fa-baby"></i></div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Women & Child Health</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Dedicated care including nutrition and vaccination tracking.</p>
+                        <a href="#" class="font-semibold text-pink-600 hover:text-pink-800">Learn More <i class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center text-center group bg-purple-50 border-purple-200">
+                        <div class="w-18 h-18 rounded-3xl bg-white text-purple-600 flex items-center justify-center text-3xl mb-7 shadow-sm"><i class="fas fa-brain"></i></div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Mental Wellness</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Find support with guided meditation and stress management.</p>
+                         <a href="#" class="font-semibold text-purple-600 hover:text-purple-800">Find Peace <i class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center text-center group bg-red-50 border-red-200">
+                         <div class="w-18 h-18 rounded-3xl bg-white text-red-600 flex items-center justify-center text-3xl mb-7 shadow-sm"><i class="fas fa-biohazard"></i></div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Outbreak Reporting</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Report diseases and see affected areas on an interactive map.</p>
+                        <a href="#" class="font-semibold text-red-600 hover:text-red-800">Report Now <i class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+                    <div class="card p-8 flex flex-col items-center text-center group bg-teal-50 border-teal-200">
+                        <div class="w-18 h-18 rounded-3xl bg-white text-teal-600 flex items-center justify-center text-3xl mb-7 shadow-sm"><i class="fas fa-users"></i></div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Community Initiatives</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Participate in health camps, awareness drives, and blood drives.</p>
+                        <a href="#" class="font-semibold text-teal-600 hover:text-teal-800">Join Campaigns <i class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="feedback" class="p-8 md:p-12 rounded-3xl bg-blue-400 text-white">
+             <div class="grid md:grid-cols-2 gap-12 items-center">
+                 <div>
+                    <h2 class="text-3xl font-bold mb-4">Share Your Experience</h2>
+                    <p class="text-blue-100 leading-relaxed">We value your opinion and are constantly striving to improve. Let us know how we can serve you better.</p>
+                    <div class="mt-8 space-y-6">
+                        <div class="p-6 bg-white text-gray-800 rounded-xl shadow-inner border border-blue-100">
+                            <p class="italic mb-3">“The real-time medicine tracker is a game-changer. No more wasted trips to the pharmacy!”</p>
+                            <span class="font-semibold">- An Urban User</span>
+                        </div>
+                        <div class="p-6 bg-white text-gray-800 rounded-xl shadow-inner border border-blue-100">
+                            <p class="italic mb-3">“Booking a doctor's appointment was incredibly simple and fast. The digital health card is a brilliant feature for keeping everything organized.”</p>
+                            <span class="font-semibold">- A New Patient</span>
+                        </div>
+                    </div>
+                 </div>
+                <form id="feedback-form" class="w-full mt-8 md:mt-0 p-6 bg-blue-500/50 rounded-2xl shadow-inner">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div>
+                            <label for="name" class="block text-blue-100 font-medium mb-2 text-lg">Your Name</label>
+                            <input type="text" id="name" class="w-full p-3 bg-blue-300/50 border-2 border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-white text-white" autocomplete="off" required>
+                        </div>
+                        <div>
+                            <label for="profession" class="block text-blue-100 font-medium mb-2 text-lg">Profession</label>
+                            <input type="text" id="profession" class="w-full p-3 bg-blue-300/50 border-2 border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-white text-white placeholder-blue-200" placeholder="e.g., Student" required>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <label for="message" class="block text-blue-100 font-medium mb-2 text-lg">Message</label>
+                        <textarea id="message" rows="5" class="w-full p-3 bg-blue-300/50 border-2 border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-white text-white resize-y" required></textarea>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <button type="submit" class="w-full md:w-auto px-10 py-4 bg-white text-blue-600 font-bold rounded-full hover:bg-blue-100 transition-colors shadow-lg text-lg">
+                            Submit Feedback
+                        </button>
+                    </div>
+                </form>
+             </div>
+        </section>
+        
+        <footer class="text-center py-12 mt-16 border-t border-gray-300">
+             <h3 class="text-3xl font-bold text-gray-800">Elixir 24/7</h3>
+             <p class="text-base text-gray-500 mt-2">Better Health, Better Future.</p>
+             <div class="flex justify-center space-x-7 text-gray-500 mt-8 text-2xl">
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-twitter"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-linkedin-in"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-instagram"></i></a>
+             </div>
+             <p class="text-sm text-gray-400 mt-8">© 2025 Elixir 24/7. All rights reserved.</p>
+        </footer>
+    </main>
+    
+    <div id="help-container">
+        <button id="help-toggle"><i class="fas fa-question"></i></button>
+    </div>
+
+    <div id="ai-assistant-container">
+        <div id="ai-assistant-chat" class="hidden card p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">AI Health Assistant</h3>
+                <button id="close-chat-btn" class="text-gray-400 hover:text-gray-700 text-xl"><i class="fas fa-times"></i></button>
+            </div>
+            <p class="text-xs text-gray-500 mb-4">Get quick answers to general health questions. Not a substitute for professional medical advice.</p>
+            <div id="health-response" class="p-4 mb-4 bg-gray-100 rounded-lg text-sm hidden whitespace-pre-wrap max-h-60 overflow-y-auto"></div>
+             <div id="loading-spinner" class="hidden flex justify-center py-3"><div class="loader"></div></div>
+            <div class="flex gap-3 items-center">
+                 <input id="health-query-input" class="flex-grow p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Ask a health question..."/>
+                <button id="get-advice-btn" class="flex justify-center items-center p-3 rounded-lg bg-blue-500 text-white font-semibold shadow-lg hover:bg-blue-600 text-lg"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <button id="ai-assistant-toggle"><i class="fas fa-comment-dots"></i></button>
+    </div>
+    
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    const headerOffset = document.querySelector('header').offsetHeight;
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = elementPosition - headerOffset - 20;
+                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                }
+            });
+        });
+        
+        const aiAssistantToggleBtn = document.getElementById('ai-assistant-toggle');
+        const aiAssistantChat = document.getElementById('ai-assistant-chat');
+        const closeChatBtn = document.getElementById('close-chat-btn');
+        aiAssistantToggleBtn.addEventListener('click', () => aiAssistantChat.classList.toggle('hidden'));
+        closeChatBtn.addEventListener('click', () => aiAssistantChat.classList.add('hidden'));
+
+        const getAdviceBtn = document.getElementById('get-advice-btn');
+        const healthQueryInput = document.getElementById('health-query-input');
+        const healthResponseDiv = document.getElementById('health-response');
+        const loadingSpinner = document.getElementById('loading-spinner');
+
+        const handleQuery = async () => {
+            const userQuery = healthQueryInput.value.trim();
+            if (userQuery === '') return;
+            
+            loadingSpinner.classList.remove('hidden');
+            healthResponseDiv.classList.add('hidden');
+            healthQueryInput.value = '';
+
+            const prompt = `You are an AI Health Assistant. Provide a concise, helpful, and general health-related response to the following user query. Use markdown for formatting like lists or bold text. Do NOT give medical advice. Always include this disclaimer at the end: "**Disclaimer:** This is for informational purposes only. Consult a healthcare professional for medical advice."\n\n**User query:** ${userQuery}`;
+            
+            try {
+                const apiKey = ""; // Should be handled in a secure environment
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+                const payload = { contents: [{ parts: [{ text: prompt }] }] };
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`API call failed: ${response.status}`);
+                const result = await response.json();
+                const generatedText = result?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response.";
+                healthResponseDiv.innerHTML = generatedText.replace(/\n/g, '<br>');
+                healthResponseDiv.classList.remove('hidden');
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                healthResponseDiv.textContent = "An error occurred. The API key might be missing or invalid. Please try again later.";
+                healthResponseDiv.classList.remove('hidden');
+            } finally {
+                loadingSpinner.classList.add('hidden');
+            }
+        };
+
+        getAdviceBtn.addEventListener('click', handleQuery);
+        healthQueryInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleQuery();
+            }
+        });
+
+        const feedbackForm = document.getElementById('feedback-form');
+        const notification = document.getElementById('notification');
+        feedbackForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            if (name) {
+                notification.textContent = `Thank you for your feedback, ${name}!`;
+                notification.classList.remove('hidden');
+                setTimeout(() => {
+                    notification.classList.remove('opacity-0');
+                }, 100);
+
+                feedbackForm.reset();
+
+                setTimeout(() => {
+                    notification.classList.add('opacity-0');
+                    setTimeout(() => {
+                        notification.classList.add('hidden');
+                    }, 500);
+                }, 4000);
+            }
+        });
+
+        const helpToggleBtn = document.getElementById('help-toggle');
+        const helpModalOverlay = document.getElementById('help-modal-overlay');
+        const helpModal = document.getElementById('help-modal');
+        const closeHelpModalBtn = document.getElementById('close-help-modal-btn');
+
+        function openHelpModal() {
+            document.body.classList.add('overflow-hidden');
+            helpModalOverlay.classList.remove('hidden');
+            setTimeout(() => {
+                helpModalOverlay.classList.remove('opacity-0');
+                helpModal.classList.remove('opacity-0', 'scale-95');
+            }, 10);
+        }
+
+        function closeHelpModal() {
+            document.body.classList.remove('overflow-hidden');
+            helpModalOverlay.classList.add('opacity-0');
+            helpModal.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                helpModalOverlay.classList.add('hidden');
+            }, 300);
+        }
+
+        helpToggleBtn.addEventListener('click', openHelpModal);
+        closeHelpModalBtn.addEventListener('click', closeHelpModal);
+        helpModalOverlay.addEventListener('click', (e) => {
+            if (e.target === helpModalOverlay) {
+                closeHelpModal();
+            }
+        });
+    </script>
+
+</body>
+</html>
+
