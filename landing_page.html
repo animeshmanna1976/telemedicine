@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Elixir 24/7 - Digital Healthcare Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Premium Bluish Gradient Background */
+            background: linear-gradient(135deg, #e7eff9 0%, #cfdcf0 100%);
+            background-attachment: fixed;
+            color: #334155;
+            line-height: 1.6;
+            overflow: hidden; /* Prevents scrolling */
+        }
+        h1 {
+            line-height: 1.25; /* Perfect line height for large headings */
+            letter-spacing: -0.025em; /* Subtle tightening of letter spacing */
+        }
+        /* Hero Section fills the viewport */
+        #landing-page {
+            height: 100vh; /* Set height to fill the screen */
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .hero-content {
+            flex-grow: 1;
+            display: grid;
+            align-items: center;
+        }
+    </style>
+</head>
+<body class="pt-8">
+
+    <div id="landing-page" class="container mx-auto px-6">
+        <!-- Simplified Header with only the Logo -->
+        <header class="py-5">
+            <div class="flex items-center space-x-4">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </div>
+        </header>
+
+        <!-- Main Landing Content -->
+        <main class="hero-content">
+            <div class="grid md:grid-cols-2 gap-16 items-center w-full">
+                <!-- Left Column: Text and Buttons -->
+                <div class="text-center md:text-left">
+                    <h1 class="text-4xl md:text-6xl font-extrabold text-gray-800" style="line-height: 1.3;">
+                        Your Health, <br/> Reimagined for the <span class="text-blue-600">Digital Age.</span>
+                    </h1>
+                    <p class="text-gray-600 mt-6 max-w-lg mx-auto md:mx-0 text-base leading-relaxed">
+                        From portable diagnostics and real-time pharmacy tracking to AI-assisted care, we're making healthcare accessible. Get uninterrupted consultations, smart alerts in your language, and a personal digital health card—all on one seamless platform.
+                    </p>
+                    <!-- Login and Sign Up Buttons -->
+                    <div class="mt-10 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+                         <a href="#" class="inline-block px-10 py-4 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 text-lg">
+                            Sign Up
+                        </a>
+                        <a href="#" class="inline-block px-10 py-4 bg-white text-blue-600 font-semibold rounded-full hover:bg-blue-50 ring-1 ring-inset ring-blue-200 transition-all duration-300 ease-in-out shadow-lg hover:shadow-xl transform hover:-translate-y-1 hover:scale-105 text-lg">
+                            Login
+                        </a>
+                    </div>
+                </div>
+                <!-- Right Column: Image -->
+                <div class="hidden md:flex justify-center items-center">
+                    <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=2070&auto=format&fit=crop" alt="Doctor using a tablet for digital healthcare" class="rounded-3xl shadow-2xl w-full h-auto max-w-lg object-cover">
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
+
+
+
+
