@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor Dashboard</title>
+  <link rel="stylesheet" href="doctor.css">
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <!-- Jitsi API -->
+  <script src="https://meet.jit.si/external_api.js"></script>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2>Doctor</h2>
+      <nav>
+        <a href="#" class="active">Appointments</a>
+        <a href="#">Patients</a>
+        <a href="#">Reports</a>
+        <a href="#">Settings</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <header>
+        <h1>Appointments Dashboard</h1>
+        <p>View patient bookings in real-time</p>
+      </header>
+
+      <section id="appointmentsContainer" class="appointments">
+        <!-- Patient cards will be loaded here -->
+      </section>
+    </main>
+  </div>
+
+  <!-- Video Call Modal -->
+  <div id="videoModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeCall()">&times;</span>
+      <div id="jitsi-container" style="height:500px; width:100%;"></div>
+    </div>
+  </div>
+
+  <script src="doctor.js"></script>
+</body>
+</html>
