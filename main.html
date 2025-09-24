@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <button><a href="second.html">going to second</a></button>
+        <button><a href="third.html">going to third</a></button>
+
+        
+    <div class="nav-right">
+        <div id="google_translate_element"></div>
+        
+    </div>
+    </header>
+    <h1>this is the first page</h1>
+    <p>here we are going to translate all page at onlce</p>
+
+    
+    <main>
+        <h2>Welcome to the Multilingual Page</h2>
+        <p>This page is designed to demonstrate multilingual support using Google Translate.</p>
+        <p>You can select your preferred language from the dropdown menu above.</p>
+        <p>Feel free to explore the other pages linked in the navigation menu.</p>
+    </main>
+
+    <!-- from here translation script -->
+     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,hi,bn,pa,ur,ta,te,ml,kn,gu,mr,or', // Added more Indian languages
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+            
+            // Apply saved language after initialization
+            setTimeout(restoreLanguage, 1000);
+        }
+        
+        // Language persistence functions
+        function saveLanguage() {
+            const select = document.querySelector('.goog-te-combo');
+            if (select && select.value) {
+                localStorage.setItem('googtrans', select.value);
+                localStorage.setItem('selectedLanguage', select.value);
+            }
+        }
+        
+        function restoreLanguage() {
+            const savedLanguage = localStorage.getItem('selectedLanguage') || getUrlParameter('lang');
+            if (savedLanguage && savedLanguage !== 'en') {
+                const select = document.querySelector('.goog-te-combo');
+                if (select) {
+                    select.value = savedLanguage;
+                    select.dispatchEvent(new Event('change'));
+                    localStorage.setItem('googtrans', '/en/' + savedLanguage);
+                }
+            }
+        }
+        
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        // Monitor language changes
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const select = document.querySelector('.goog-te-combo');
+                if (select) {
+                    select.addEventListener('change', saveLanguage);
+                }
+            }, 2000);
+        });
+    </script>
+
+    //Navigation with language persistence
+    <script>
+        // Enhanced navigation with translation persistence
+        function navigateWithTranslation(url) {
+            // Get current language from Google Translate
+            const select = document.querySelector('.goog-te-combo');
+            const currentLang = select ? select.value : 'en';
+            
+            // Store in localStorage
+            if (currentLang && currentLang !== 'en') {
+                localStorage.setItem('selectedLanguage', currentLang);
+                localStorage.setItem('googtrans', '/en/' + currentLang);
+                
+                // Add language parameter to URL
+                const separator = url.includes('?') ? '&' : '?';
+                url += `${separator}lang=${currentLang}`;
+            }
+            
+            window.location.href = url;
+        }
+        
+        // Update all navigation links to use language persistence
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const navLinks = document.querySelectorAll('.nav-links a[href]');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        navigateWithTranslation(this.getAttribute('href'));
+                    });
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
