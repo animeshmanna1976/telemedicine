@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Library - Elixir 24/7</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="lib.css">
+</head>
+<body>
+
+    <header class="fixed top-0 left-0 right-0 z-40 py-5 bg-white/50 backdrop-blur-lg shadow-sm">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <a href="index.html" class="flex items-center space-x-4">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </a>
+            <nav class="hidden md:flex items-center gap-8 text-gray-600 font-medium text-lg">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="index.html#services" class="nav-link">Services</a>
+                <a href="#" class="nav-link active">Resources</a>
+                <a href="#" class="nav-link">About Us</a>
+                <a href="#" class="nav-link">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto space-y-20 px-6 pt-32">
+
+        <section class="text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight">
+                Resource Library
+            </h1>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
+                Your trusted source for health guidelines, educational materials, and answers to common questions.
+            </p>
+        </section>
+
+        <section class="max-w-3xl mx-auto">
+             <div class="relative">
+                <input type="text" id="search-input" placeholder="Search for topics like 'fever', 'nutrition'..." class="w-full p-5 pl-14 text-lg rounded-full border-2 border-gray-300 focus:ring-4 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition">
+                <i class="fas fa-search absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
+            </div>
+        </section>
+
+        <section id="guidelines" class="resource-section">
+            <h2 class="section-title">Health Guidelines</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="resource-card">
+                    <i class="fas fa-shield-virus card-icon text-red-500"></i>
+                    <h3 class="card-title">Disease Prevention</h3>
+                    <p class="card-description">Official guidelines on vaccination, masking, and social distancing to stay safe.</p>
+                    <a href="#" class="card-link border-red-500 text-red-600">Read More</a>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-apple-alt card-icon text-green-500"></i>
+                    <h3 class="card-title">Healthy Nutrition</h3>
+                    <p class="card-description">Learn about balanced diets, essential nutrients, and healthy eating habits for all ages.</p>
+                    <a href="#" class="card-link border-green-500 text-green-600">Read More</a>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-running card-icon text-sky-500"></i>
+                    <h3 class="card-title">Physical Activity</h3>
+                    <p class="card-description">Recommendations for exercise routines to improve cardiovascular health and well-being.</p>
+                    <a href="#" class="card-link border-sky-500 text-sky-600">Read More</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="education" class="resource-section">
+            <h2 class="section-title">Educational Materials</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="resource-card">
+                    <i class="fas fa-book-medical card-icon text-indigo-500"></i>
+                    <h3 class="card-title">Understanding Diabetes</h3>
+                    <p class="card-description">An in-depth guide covering types, symptoms, and management of diabetes.</p>
+                    <a href="#" class="card-link border-indigo-500 text-indigo-600">Download PDF</a>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-head-side-virus card-icon text-amber-500"></i>
+                    <h3 class="card-title">Managing Mental Health</h3>
+                    <p class="card-description">Resources on stress reduction, anxiety management, and when to seek help.</p>
+                    <a href="#" class="card-link border-amber-500 text-amber-600">View Article</a>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-baby card-icon text-pink-500"></i>
+                    <h3 class="card-title">First Aid for Children</h3>
+                    <p class="card-description">Essential first aid techniques for common childhood injuries and emergencies.</p>
+                    <a href="#" class="card-link border-pink-500 text-pink-600">Watch Video</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="faqs" class="resource-section">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="max-w-4xl mx-auto space-y-5">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What are the common symptoms of the flu?</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Common flu symptoms include fever, cough, sore throat, body aches, headaches, and fatigue. While most people recover in a week, it can cause severe illness in high-risk groups.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How often should I get a health check-up?</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>For most adults under 50, a routine check-up every 1-3 years is recommended. Adults over 50 should aim for annual check-ups. Your doctor may suggest a different schedule based on your personal health risks.</p>
+                    </div>
+                </div>
+                 <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What is the difference between a pandemic and an epidemic?</span>
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>An **epidemic** is a disease that affects a large number of people within a specific community, population, or region. A **pandemic** is an epidemic that has spread over multiple countries or continents, affecting a significant portion of the world.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-12 mt-20 border-t border-gray-200 bg-white">
+         <div class="container mx-auto">
+            <h3 class="text-3xl font-bold text-gray-800">Elixir 24/7</h3>
+            <p class="text-base text-gray-500 mt-2">Better Health, Better Future.</p>
+            <p class="text-sm text-gray-400 mt-8">© 2025 Elixir 24/7. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="lib.js"></script>
+</body>
+</html>
