@@ -1,0 +1,54 @@
+/* General Body and Font Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #f0f5fa 0%, #e6eef8 100%);
+    background-attachment: fixed;
+    color: #334155;
+    /* Default text color */
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+    line-height: 1.3;
+}
+
+/* Container for consistent width */
+.container {
+    max-width: 1200px;
+}
+
+/* Form element base styling */
+input:not([type="submit"]),
+select,
+textarea {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Navigation Link Underline Effect */
+.nav-link {
+    position: relative;
+    transition: color 0.3s ease;
+    padding: 0.5rem 0;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    bottom: -8px;
+    left: 50%;
+    background-color: #2563eb;
+    transition: all 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+    color: #1e3a8a;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+    left: 0;
+}
