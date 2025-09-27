@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elixir 24/7 - Patient Onboarding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f5fa 0%, #e6eef8 100%);
+            background-attachment: fixed;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -8px;
+            left: 50%;
+            background-color: #2563eb;
+            transition: all 0.3s ease-in-out;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+        /* Form styling consistency */
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            transition: all 0.2s ease-in-out;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #84cc16; /* Lime color */
+            box-shadow: 0 0 0 3px rgba(132, 204, 22, 0.2);
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="notification" class="hidden fixed top-5 left-1/2 -translate-x-1/2 bg-green-500 text-white py-3 px-6 rounded-full shadow-lg opacity-0 transition-opacity duration-500 z-50"></div>
+
+    <header class="fixed top-0 left-0 right-0 z-40 py-5 bg-white/30 backdrop-blur-lg shadow-sm">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <a href="index.html" class="flex items-center space-x-4">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </a>
+            <nav id="main-nav" class="hidden md:flex items-center gap-8 text-gray-600 font-medium text-lg">
+                <a href="healthworker-dashboard.html" class="nav-link">Home</a>
+                <a href="healthworker-dashboard.html#tools" class="nav-link text-blue-600 font-semibold">Tools</a>
+                <a href="#" class="nav-link">Reports</a>
+                <a href="#" class="nav-link">Settings</a>
+                <a href="#" class="nav-link">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto space-y-16 px-6 pt-32 pb-24">
+
+        <section id="hero" class="text-center">
+             <div class="flex justify-center items-center gap-4 mb-4">
+                <i class="fas fa-user-plus text-4xl text-lime-600"></i>
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight tracking-tight">
+                    Patient Onboarding & Support
+                </h1>
+            </div>
+            <p class="text-gray-600 mt-2 max-w-3xl mx-auto text-lg leading-relaxed">
+                Register new patients and manage their profiles to connect them with essential healthcare services.
+            </p>
+        </section>
+        
+        <section id="onboarding-content">
+            <div class="bg-white/60 p-8 md:p-12 rounded-3xl shadow-lg backdrop-blur-sm">
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-12">
+                    
+                    <!-- Left Column: Registration Form -->
+                    <div class="lg:col-span-3">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-6">Register a New Patient</h2>
+                        <form id="onboarding-form" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="full-name" class="form-label">Full Name</label>
+                                    <input type="text" id="full-name" class="form-input" placeholder="Patient's full name" required>
+                                </div>
+                                <div>
+                                    <label for="contact-number" class="form-label">Contact Number</label>
+                                    <input type="tel" id="contact-number" class="form-input" placeholder="10-digit mobile number" required>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="dob" class="form-label">Date of Birth</label>
+                                    <input type="date" id="dob" class="form-input text-gray-500" required>
+                                </div>
+                                <div>
+                                    <label for="gender" class="form-label">Gender</label>
+                                    <select id="gender" class="form-input text-gray-500" required>
+                                        <option value="">Select Gender</option>
+                                        <option value="male">Male</option>
+                                        <option value="female">Female</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="address" class="form-label">Full Address</label>
+                                <textarea id="address" rows="3" class="form-input resize-y" placeholder="Enter patient's full address" required></textarea>
+                            </div>
+                            <div>
+                                <label for="pre-existing-conditions" class="form-label">Pre-existing Conditions (Optional)</label>
+                                <textarea id="pre-existing-conditions" rows="3" class="form-input resize-y" placeholder="e.g., Diabetes, Hypertension..."></textarea>
+                            </div>
+                            <div class="pt-4">
+                                <button type="submit" class="w-full py-3 px-6 bg-lime-600 text-white font-semibold rounded-full hover:bg-lime-700 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-lg">
+                                    <i class="fas fa-check-circle mr-2"></i>Register Patient
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Right Column: Recently Onboarded -->
+                    <div class="lg:col-span-2">
+                         <h2 class="text-3xl font-bold text-gray-800 mb-6">Recently Onboarded</h2>
+                         <div id="recent-patients-list" class="space-y-4">
+                            <!-- Patient Template (hidden, for cloning) -->
+                             <div id="patient-template" class="hidden bg-white p-4 rounded-xl shadow flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="patient-initials w-12 h-12 rounded-full bg-lime-100 text-lime-600 flex items-center justify-center font-bold text-lg"></div>
+                                    <div>
+                                        <p class="patient-name font-bold text-gray-800"></p>
+                                        <p class="patient-details text-sm text-gray-500"></p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <a href="patient-profile.html" class="view-profile-btn w-10 h-10 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 transition flex items-center justify-center"><i class="fas fa-eye"></i></a>
+                                    <a href="book-appointment.html" class="book-appointment-btn w-10 h-10 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 transition flex items-center justify-center"><i class="fas fa-calendar-plus"></i></a>
+                                </div>
+                            </div>
+                            <!-- Demo Patients -->
+                            <div class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-lime-100 text-lime-600 flex items-center justify-center font-bold text-lg">AS</div>
+                                    <div>
+                                        <p class="font-bold text-gray-800">Asha Sharma</p>
+                                        <p class="text-sm text-gray-500">Age: 45, Female</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <a href="patient-profile.html" class="w-10 h-10 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 transition flex items-center justify-center"><i class="fas fa-eye"></i></a>
+                                    <a href="book-appointment.html" class="w-10 h-10 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 transition flex items-center justify-center"><i class="fas fa-calendar-plus"></i></a>
+                                </div>
+                            </div>
+                             <div class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-lime-100 text-lime-600 flex items-center justify-center font-bold text-lg">VK</div>
+                                    <div>
+                                        <p class="font-bold text-gray-800">Vikram Kumar</p>
+                                        <p class="text-sm text-gray-500">Age: 62, Male</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <a href="patient-profile.html" class="w-10 h-10 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 transition flex items-center justify-center"><i class="fas fa-eye"></i></a>
+                                    <a href="book-appointment.html" class="w-10 h-10 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 transition flex items-center justify-center"><i class="fas fa-calendar-plus"></i></a>
+                                </div>
+                            </div>
+                              <div class="bg-white p-4 rounded-xl shadow flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-lime-100 text-lime-600 flex items-center justify-center font-bold text-lg">SD</div>
+                                    <div>
+                                        <p class="font-bold text-gray-800">Sunita Devi</p>
+                                        <p class="text-sm text-gray-500">Age: 28, Female</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <a href="patient-profile.html" class="w-10 h-10 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 transition flex items-center justify-center"><i class="fas fa-eye"></i></a>
+                                    <a href="book-appointment.html" class="w-10 h-10 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 transition flex items-center justify-center"><i class="fas fa-calendar-plus"></i></a>
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        
+        <footer class="text-center py-12 border-t border-gray-300">
+             <h3 class="text-3xl font-bold text-gray-800">Elixir 24/7</h3>
+             <p class="text-base text-gray-500 mt-2">Empowering Health Workers, Enriching Communities.</p>
+             <div class="flex justify-center space-x-7 text-gray-500 mt-8 text-2xl">
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-twitter"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-linkedin-in"></i></a>
+                 <a href="#" class="hover:text-blue-600"><i class="fab fa-instagram"></i></a>
+             </div>
+             <p class="text-sm text-gray-400 mt-8">© 2025 Elixir 24/7. All rights reserved.</p>
+        </footer>
+    </main>
+    
+    <script>
+        const onboardingForm = document.getElementById('onboarding-form');
+        const notification = document.getElementById('notification');
+        const recentPatientsList = document.getElementById('recent-patients-list');
+        const patientTemplate = document.getElementById('patient-template');
+
+        // Function to calculate age from DOB
+        function getAge(dateString) {
+            const today = new Date();
+            const birthDate = new Date(dateString);
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        onboardingForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            const fullName = document.getElementById('full-name').value;
+            const dob = document.getElementById('dob').value;
+            const gender = document.getElementById('gender').value;
+            
+            if (fullName && dob && gender) {
+                // Show success notification
+                notification.textContent = `${fullName} has been successfully registered!`;
+                notification.classList.remove('hidden');
+                setTimeout(() => notification.classList.remove('opacity-0'), 100);
+
+                // --- Add new patient to the list dynamically ---
+                const newPatient = patientTemplate.cloneNode(true);
+                newPatient.removeAttribute('id');
+                newPatient.classList.remove('hidden');
+
+                // Populate data
+                const initials = fullName.split(' ').map(n => n[0]).join('').toUpperCase();
+                const age = getAge(dob);
+                const capitalizedGender = gender.charAt(0).toUpperCase() + gender.slice(1);
+                
+                newPatient.querySelector('.patient-initials').textContent = initials;
+                newPatient.querySelector('.patient-name').textContent = fullName;
+                newPatient.querySelector('.patient-details').textContent = `Age: ${age}, ${capitalizedGender}`;
+                
+                // Add the new patient to the top of the list
+                recentPatientsList.prepend(newPatient);
+                
+                // Reset form and hide notification after a delay
+                onboardingForm.reset();
+                setTimeout(() => {
+                    notification.classList.add('opacity-0');
+                    setTimeout(() => notification.classList.add('hidden'), 500);
+                }, 4000);
+            }
+        });
+    </script>
+</body>
+</html>
+
