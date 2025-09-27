@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elixir 24/7 - Facilitate Appointments</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="faciapp.css">
+</head>
+
+<body>
+
+    <div id="notification"
+        class="hidden fixed top-5 left-1/2 -translate-x-1/2 bg-green-500 text-white py-3 px-6 rounded-full shadow-lg opacity-0 transition-opacity duration-500 z-50">
+    </div>
+
+    <header class="fixed top-0 left-0 right-0 z-40 py-5 bg-white/30 backdrop-blur-lg shadow-sm">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <a href="index.html" class="flex items-center space-x-4">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </a>
+            <nav class="hidden md:flex items-center gap-8 text-gray-600 font-medium text-lg">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="index.html#tools" class="nav-link">Tools</a>
+                <a href="#" class="nav-link">Reports</a>
+                <a href="#" class="nav-link">Settings</a>
+                <a href="#" class="nav-link">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto space-y-16 px-6 pt-32">
+
+        <section id="facilitate-appointments">
+            <div class="bg-white/60 p-8 md:p-12 rounded-3xl shadow-lg backdrop-blur-sm">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-bold text-gray-800">Facilitate Patient Appointments</h2>
+                    <p class="text-gray-500 mt-3 max-w-2xl mx-auto text-lg">Search for a patient to manage their existing appointments or book a new one.</p>
+                </div>
+
+                <div class="max-w-3xl mx-auto">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <input type="text" id="patient-search-input" placeholder="Search by Patient Name or ID..."
+                            class="w-full px-5 py-3 text-lg text-gray-700 bg-white border-2 border-gray-200 rounded-full focus:outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-500 transition-all">
+                        <button id="patient-search-btn"
+                            class="bg-orange-600 text-white font-bold text-lg px-8 py-3 rounded-full hover:bg-orange-700 transition-colors duration-300 shadow-md">
+                            <i class="fas fa-search mr-2"></i>Search
+                        </button>
+                    </div>
+                </div>
+
+                <div id="patient-details-section" class="hidden mt-14 max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <div class="space-y-8">
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-700 mb-4 border-b-2 pb-2">Patient Details</h3>
+                                <div class="flex items-center gap-6">
+                                    <img id="patient-avatar" src="https://via.placeholder.com/100" alt="Patient Avatar" class="w-24 h-24 rounded-full border-4 border-gray-200">
+                                    <div>
+                                        <h4 id="patient-name" class="text-xl font-semibold text-gray-800">Aarav Sharma</h4>
+                                        <p id="patient-info" class="text-gray-600">Male, 45 Years Old</p>
+                                        <p id="patient-id" class="text-sm text-gray-500">ID: P-12345</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-700 mb-4 border-b-2 pb-2">Upcoming Appointments</h3>
+                                <div id="appointments-list" class="space-y-4">
+                                    <p class="text-gray-500">No upcoming appointments found.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-orange-50 border-2 border-orange-200 rounded-2xl p-8">
+                            <h3 class="text-2xl font-bold text-gray-700 mb-6 text-center">Book a New Appointment</h3>
+                            <form id="booking-form" class="space-y-5">
+                                <div>
+                                    <label for="department" class="font-semibold text-gray-600 mb-1 block">Department</label>
+                                    <select id="department" class="w-full px-4 py-2.5 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300">
+                                        <option>Cardiology</option>
+                                        <option>Dermatology</option>
+                                        <option>Orthopedics</option>
+                                        <option>General Medicine</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="doctor" class="font-semibold text-gray-600 mb-1 block">Doctor</label>
+                                    <select id="doctor" class="w-full px-4 py-2.5 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300">
+                                        <option>Dr. Priya Singh</option>
+                                        <option>Dr. Rohan Gupta</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="appointment-date" class="font-semibold text-gray-600 mb-1 block">Date</label>
+                                    <input type="date" id="appointment-date" class="w-full px-4 py-2 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300">
+                                </div>
+                                <div>
+                                    <label for="notes" class="font-semibold text-gray-600 mb-1 block">Notes (Optional)</label>
+                                    <textarea id="notes" rows="3" placeholder="e.g., Follow-up for blood pressure check..." class="w-full px-4 py-2 text-base border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300"></textarea>
+                                </div>
+                                <button type="submit"
+                                    class="w-full bg-orange-600 text-white font-bold text-lg px-8 py-3 rounded-full hover:bg-orange-700 transition-colors duration-300 shadow-md mt-4">
+                                    Confirm Booking
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-12 mt-16 border-t border-gray-300">
+        <h3 class="text-3xl font-bold text-gray-800">Elixir 24/7</h3>
+        <p class="text-base text-gray-500 mt-2">Empowering Health Workers, Enriching Communities.</p>
+        <div class="flex justify-center space-x-7 text-gray-500 mt-8 text-2xl">
+            <a href="#" class="hover:text-blue-600"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="hover:text-blue-600"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="hover:text-blue-600"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p class="text-sm text-gray-400 mt-8">© 2025 Elixir 24/7. All rights reserved.</p>
+    </footer>
+
+    <script src="faciapp.js"></script>
+</body>
+
+</html>
