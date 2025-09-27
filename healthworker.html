@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elixir 24/7 - Health Worker Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="healthworker.css">
+</head>
+
+<body>
+
+    <div id="notification"
+        class="hidden fixed top-5 left-1/2 -translate-x-1/2 bg-green-500 text-white py-3 px-6 rounded-full shadow-lg opacity-0 transition-opacity duration-500 z-50">
+    </div>
+
+    <header class="fixed top-0 left-0 right-0 z-40 py-5 bg-white/30 backdrop-blur-lg shadow-sm">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <a href="index.html" class="flex items-center space-x-4">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </a>
+
+            <nav id="main-nav" class="hidden md:flex items-center gap-8 text-gray-600 font-medium text-lg">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#tools" class="nav-link">Tools</a>
+                <a href="#" class="nav-link">Reports</a>
+                <a href="#" class="nav-link">Settings</a>
+                <a href="#" class="nav-link">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto space-y-24 px-6 pt-32" id="home">
+
+        <section id="welcome" class="text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight tracking-tight">
+                Welcome, Health Worker!
+            </h1>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
+                Empowering you with tools to support your community's health and connect them to vital care.
+            </p>
+        </section>
+
+        <section id="tools">
+            <div class="bg-white/60 p-8 md:p-12 rounded-3xl shadow-lg backdrop-blur-sm">
+                <div class="text-center mb-14">
+                    <h2 class="text-4xl font-bold text-gray-800">Your Essential Tools</h2>
+                    <p class="text-gray-500 mt-3 max-w-2xl mx-auto text-lg">Streamline your work and enhance community
+                        health outreach.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+
+                    <div class="card p-8 flex flex-col items-center text-center group bg-lime-50 border-lime-200">
+                        <div
+                            class="w-18 h-18 rounded-3xl bg-white text-lime-600 flex items-center justify-center text-3xl mb-7 shadow-sm">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Patient Onboarding & Support</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Guide new patients through registration and
+                            digital health profile creation.</p>
+                        <a href="#" class="font-semibold text-lime-600 hover:text-lime-800">Start Onboarding <i
+                                class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+
+                    <div class="card p-8 flex flex-col items-center text-center group bg-orange-50 border-orange-200">
+                        <div
+                            class="w-18 h-18 rounded-3xl bg-white text-orange-600 flex items-center justify-center text-3xl mb-7 shadow-sm">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Facilitate Appointments</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Book and manage doctor consultations for
+                            patients with ease.</p>
+                        <a href="#" class="font-semibold text-orange-600 hover:text-orange-800">Book Appointment <i
+                                class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+
+                    <div class="card p-8 flex flex-col items-center text-center group bg-teal-50 border-teal-200">
+                        <div
+                            class="w-18 h-18 rounded-3xl bg-white text-teal-600 flex items-center justify-center text-3xl mb-7 shadow-sm">
+                            <i class="fas fa-book-medical"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Resource Library</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Access health guidelines, educational
+                            materials, and FAQs for common issues.</p>
+                        <a href="#" class="font-semibold text-teal-600 hover:text-teal-800">Browse Resources <i
+                                class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+
+                    <div class="card p-8 flex flex-col items-center text-center group bg-fuchsia-50 border-fuchsia-200">
+                        <div
+                            class="w-18 h-18 rounded-3xl bg-white text-fuchsia-600 flex items-center justify-center text-3xl mb-7 shadow-sm">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Outreach Planning</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Plan and track community health camps and
+                            awareness drives.</p>
+                        <a href="#" class="font-semibold text-fuchsia-600 hover:text-fuchsia-800">Plan Activities <i
+                                class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center py-12 mt-16 border-t border-gray-300">
+            <h3 class="text-3xl font-bold text-gray-800">Elixir 24/7</h3>
+            <p class="text-base text-gray-500 mt-2">Empowering Health Workers, Enriching Communities.</p>
+            <div class="flex justify-center space-x-7 text-gray-500 mt-8 text-2xl">
+                <a href="#" class="hover:text-blue-600"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="hover:text-blue-600"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="hover:text-blue-600"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p class="text-sm text-gray-400 mt-8">© 2025 Elixir 24/7. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <script src="healthworker.js"></script>
+</body>
+
+</html>
