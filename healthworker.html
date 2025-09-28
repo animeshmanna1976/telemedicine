@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elixir 24/7 - Health Worker Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* General Body and Font Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f5fa 0%, #e6eef8 100%);
+            background-attachment: fixed;
+            color: #334155;
+            /* Default text color */
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3 {
+            line-height: 1.3;
+        }
+
+        /* Container for consistent width */
+        .container {
+            max-width: 1200px;
+        }
+
+        /* Card Styling for Services/Tools */
+        .card {
+            border-radius: 1.5rem;
+            border-width: 2px;
+            /* Set a constant border width */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            /* Added border-width and border-color to transition */
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, border-width 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        /* Specific hover effect for the 4-card grid items */
+        .grid .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            border-width: 4px;
+            /* Bolder border on hover */
+        }
+
+        /* Hover style for the new wide card (optional: can be removed if you don't want it to lift) */
+        #ai-training-card:hover {
+            transform: translateY(-5px);
+            /* Less dramatic lift */
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border-width: 4px;
+        }
+
+        /* Darker border colors on hover for each card type */
+        .card.border-lime-200:hover {
+            border-color: #65a30d;
+        }
+
+        /* Patient Onboarding */
+        .card.border-orange-200:hover {
+            border-color: #ea580c;
+        }
+
+        /* Facilitate Appointments */
+        .card.border-teal-200:hover {
+            border-color: #0d9488;
+        }
+
+        /* Resource Library */
+        .card.border-fuchsia-200:hover {
+            border-color: #c026d3;
+        }
+
+        /* Outreach Planning */
+        .card.border-blue-200:hover {
+            border-color: #2563eb;
+        }
+
+        /* New AI Training Card */
+
+
+        /* Loader for potential async operations */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2563eb;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Navigation Link Underline Effect */
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            bottom: -8px;
+            left: 50%;
+            background-color: #2563eb;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .nav-link:hover {
+            color: #1e3a8a;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        /* Browser autofill style override for consistency */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #60a5fa inset !important;
+            /* Using a blue shade to override yellow */
+            -webkit-text-fill-color: white !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="notification"
+        class="hidden fixed top-5 left-1/2 -translate-x-1/2 bg-green-500 text-white py-3 px-6 rounded-full shadow-lg opacity-0 transition-opacity duration-500 z-50">
+    </div>
+
+    <header class="fixed top-0 left-0 right-0 z-40 py-5 bg-white/30 backdrop-blur-lg shadow-sm">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <a href="index.html" class="flex items-center space-x-4">
+                <i class="fas fa-heart-pulse text-4xl text-blue-600"></i>
+                <h1 class="text-3xl font-extrabold text-gray-800">Elixir 24/7</h1>
+            </a>
+
+            <nav id="main-nav" class="hidden md:flex items-center gap-8 text-gray-600 font-medium text-lg">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#tools" class="nav-link">Tools</a>
+                <a href="#" class="nav-link">Reports</a>
+                <a href="#" class="nav-link">Settings</a>
+                <a href="#" class="nav-link">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto space-y-24 px-6 pt-32" id="home">
+
+        <section id="welcome" class="text-center">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 leading-tight tracking-tight">
+                Welcome, Health Worker!
+            </h1>
+            <p class="text-gray-600 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
+                Empowering you with tools to support your community's health and connect them to vital care.
+            </p>
+        </section>
+
+        <section id="tools">
+            <div class="bg-white/60 p-8 md:p-12 rounded-3xl shadow-lg backdrop-blur-sm">
+                <div class="text-center mb-14">
+                    <h2 class="text-4xl font-bold text-gray-800">Your Essential Tools</h2>
+                    <p class="text-gray-500 mt-3 max-w-2xl mx-auto text-lg">Streamline your work and enhance community
+                        health outreach.</p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+
+                    <div class="card p-8 flex flex-col items-center text-center group bg-lime-50 border-lime-200">
+                        <div
+                            class="w-18 h-18 rounded-3xl bg-white text-lime-600 flex items-center justify-center text-3xl mb-7 shadow-sm">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Patient Onboarding & Support</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Guide new patients through registration and
+                            digital health profile creation.</p>
+                        <a href="#" class="font-semibold text-lime-600 hover:text-lime-800">Start Onboarding <i
+                                class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+
+                    <div class="card p-8 flex flex-col items-center text-center group bg-orange-50 border-orange-200">
+                        <div
+                            class="w-18 h-18 rounded-3xl bg-white text-orange-600 flex items-center justify-center text-3xl mb-7 shadow-sm">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Facilitate Appointments</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Book and manage doctor consultations for
+                            patients with ease.</p>
+                        <a href="#" class="font-semibold text-orange-600 hover:text-orange-800">Book Appointment <i
+                                class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+
+                    <div class="card p-8 flex flex-col items-center text-center group bg-teal-50 border-teal-200">
+                        <div
+                            class="w-18 h-18 rounded-3xl bg-white text-teal-600 flex items-center justify-center text-3xl mb-7 shadow-sm">
+                            <i class="fas fa-book-medical"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Resource Library</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Access health guidelines, educational
+                            materials, and FAQs for common issues.</p>
+                        <a href="#" class="font-semibold text-teal-600 hover:text-teal-800">Browse Resources <i
+                                class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+
+                    <div class="card p-8 flex flex-col items-center text-center group bg-fuchsia-50 border-fuchsia-200">
+                        <div
+                            class="w-18 h-18 rounded-3xl bg-white text-fuchsia-600 flex items-center justify-center text-3xl mb-7 shadow-sm">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Outreach Planning</h3>
+                        <p class="text-base text-gray-600 mb-5 flex-grow">Plan and track community health camps and
+                            awareness drives.</p>
+                        <a href="#" class="font-semibold text-fuchsia-600 hover:text-fuchsia-800">Plan Activities <i
+                                class="fas fa-arrow-right ml-1 text-sm"></i></a>
+                    </div>
+
+                </div>
+
+                <div id="ai-training-card"
+                    class="card p-8 flex items-center justify-between group bg-blue-50 border-blue-200 cursor-pointer transition-shadow">
+                    <div class="flex items-center space-x-6">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-white text-blue-600 flex items-center justify-center text-3xl shadow-md">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-800">AI-Augmented Training & Skill Development</h3>
+                            <p class="text-base text-gray-600 mt-1">Access interactive modules and simulations powered
+                                by AI to enhance community health service delivery.</p>
+                        </div>
+                    </div>
+                    <a href="#" class="font-semibold text-blue-600 text-lg flex items-center hover:text-blue-800">
+                        Start Training <i class="fas fa-arrow-right ml-2 text-base"></i>
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="text-center py-12 mt-16 border-t border-gray-300">
+            <h3 class="text-3xl font-bold text-gray-800">Elixir 24/7</h3>
+            <p class="text-base text-gray-500 mt-2">Empowering Health Workers, Enriching Communities.</p>
+            <div class="flex justify-center space-x-7 text-gray-500 mt-8 text-2xl">
+                <a href="#" class="hover:text-blue-600"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-blue-600"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="hover:text-blue-600"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" class="hover:text-blue-600"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p class="text-sm text-gray-400 mt-8">© 2025 Elixir 24/7. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Smooth Scrolling for Navigation ---
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        const headerOffset = document.querySelector('header').offsetHeight;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                        const offsetPosition = elementPosition - headerOffset - 20;
+                        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // --- Notification System ---
+            const showNotification = (message, type = 'success', duration = 4000) => {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+
+                // Reset classes
+                notification.classList.remove('bg-green-500', 'bg-red-500', 'hidden', 'opacity-0');
+
+                // Set type-specific classes
+                if (type === 'success') {
+                    notification.classList.add('bg-green-500');
+                } else if (type === 'error') {
+                    notification.classList.add('bg-red-500');
+                } else { // Default to success
+                    notification.classList.add('bg-green-500');
+                }
+
+                // Show notification
+                notification.classList.remove('hidden');
+                setTimeout(() => {
+                    notification.classList.remove('opacity-0');
+                }, 100);
+
+                // Hide notification after duration
+                setTimeout(() => {
+                    notification.classList.add('opacity-0');
+                    setTimeout(() => {
+                        notification.classList.add('hidden');
+                    }, 500); // Allow fade-out transition to complete
+                }, duration);
+            };
+
+            // --- Card Interaction Handlers ---
+
+            // Listener for the wide AI Training Card
+            const aiTrainingCard = document.getElementById('ai-training-card');
+            if (aiTrainingCard) {
+                aiTrainingCard.addEventListener('click', () => {
+                    showNotification('Launching AI Training Module...', 'success');
+                    console.log('Navigate to AI-Augmented Training and Simulation Portal');
+                });
+            }
+
+            // Listener for the 4-card grid items
+
+            // Patient Onboarding
+            document.querySelector('.card.border-lime-200')?.addEventListener('click', () => {
+                showNotification('Opening Patient Onboarding...', 'success');
+                console.log('Navigate to Patient Onboarding Form');
+            });
+
+            // Facilitate Appointments
+            document.querySelector('.card.border-orange-200')?.addEventListener('click', () => {
+                showNotification('Opening Appointment Facilitation...', 'success');
+                console.log('Navigate to Appointment Booking Form');
+            });
+
+            // Resource Library
+            document.querySelector('.card.border-teal-200')?.addEventListener('click', () => {
+                showNotification('Loading Resource Library...', 'success');
+                console.log('Navigate to Resource Library');
+            });
+
+            // Outreach Planning
+            document.querySelector('.card.border-fuchsia-200')?.addEventListener('click', () => {
+                showNotification('Opening Outreach Planning...', 'success');
+                console.log('Navigate to Outreach Planning Module');
+            });
+        });
+    </script>
+</body>
+
+</html>
